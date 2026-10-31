@@ -1,0 +1,1055 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Core 1 Bench</title>
+<meta name="description" content="Quick, ADHD-friendly practice for the CompTIA A+ Core 1 (220-1201) exam. Short sprints, instant feedback, and explanations of why your pick was wrong.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2313202A'/%3E%3Ctext x='16' y='23' font-family='Arial Narrow,Arial,sans-serif' font-weight='700' font-size='17' text-anchor='middle' fill='%23E39E14'%3EA+%3C/text%3E%3C/svg%3E">
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Big+Shoulders+Display:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one centered workbench column on an ESD-mat dot grid. Silkscreen-style labels (D1–D5) mark the exam domains. */
+:root{
+  --mat:#E3E9ED; --mat-dot:#C9D3DA; --board:#F8FAFB; --board-2:#EDF1F4; --ink:#13202A; --ink-2:#4E606E; --line:#C4CFD7;
+  --led:#E39E14; --led-ink:#7A4D00; --led-soft:#FBEBC4;
+  --ok:#1B7A47; --ok-soft:#DCF0E3; --bad:#B4372A; --bad-soft:#F7E0DB; --focus:#2E66D0;
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --mat:#0D171E; --mat-dot:#1A2833; --board:#14222C; --board-2:#1A2B37; --ink:#E4ECF1; --ink-2:#96A8B5; --line:#2A3D4B;
+  --led:#F2B440; --led-ink:#F5C565; --led-soft:#3A2D12;
+  --ok:#4CC387; --ok-soft:#13342A; --bad:#F07B67; --bad-soft:#3C1E1A; --focus:#86AEFF; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --mat:#0D171E; --mat-dot:#1A2833; --board:#14222C; --board-2:#1A2B37; --ink:#E4ECF1; --ink-2:#96A8B5; --line:#2A3D4B;
+  --led:#F2B440; --led-ink:#F5C565; --led-soft:#3A2D12;
+  --ok:#4CC387; --ok-soft:#13342A; --bad:#F07B67; --bad-soft:#3C1E1A; --focus:#86AEFF; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--mat);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;
+  background-image:radial-gradient(var(--mat-dot) 1.1px,transparent 1.5px);background-size:18px 18px;min-height:100vh}
+.wrap{max-width:780px;margin:0 auto;padding-block:18px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap.wide{max-width:1100px}
+h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:.01em;line-height:1.05;text-wrap:balance;margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
+.silk{font-family:var(--display);font-weight:600;text-transform:uppercase;letter-spacing:.09em;font-size:13px;color:var(--ink-2)}
+.mono{font-family:var(--mono)}
+.tabnum{font-variant-numeric:tabular-nums}
+
+/* top bar */
+.bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.brand{display:flex;align-items:baseline;gap:8px;background:none;border:0;padding:0;color:var(--ink)}
+.brand b{font-family:var(--display);font-weight:800;font-size:28px;letter-spacing:.02em;text-transform:uppercase}
+.brand span{font-family:var(--mono);font-size:12px;color:var(--ink-2)}
+.bar .spacer{flex:1}
+.stat{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:13px;color:var(--ink-2)}
+.stat strong{color:var(--ink);font-weight:600}
+.led{width:9px;height:9px;border-radius:50%;background:var(--led);box-shadow:0 0 0 3px var(--led-soft)}
+.led.off{background:var(--line);box-shadow:none}
+
+/* panels */
+.panel{background:var(--board);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.stack{display:flex;flex-direction:column;gap:16px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:8px;border:1.5px solid var(--line);background:var(--board);padding:10px 16px;font-weight:700;min-height:44px}
+.btn:hover{border-color:var(--ink-2)}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:var(--board)}
+.btn.primary:hover{opacity:.92}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--ink-2)}
+.btn.ghost:hover{color:var(--ink);border-color:var(--line)}
+.btn.small{min-height:34px;padding:6px 12px;font-size:14px}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+kbd{font-family:var(--mono);font-size:11px;border:1px solid currentColor;border-radius:4px;padding:0 5px;opacity:.7;font-weight:400}
+
+/* home */
+.hero{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
+.hero h1{font-size:clamp(34px,6vw,50px);text-transform:uppercase}
+.hero p{margin:6px 0 0;color:var(--ink-2);max-width:46ch}
+.go{font-size:19px;padding:16px 22px;min-height:58px}
+.ring{position:relative;width:96px;height:96px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring .lbl{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--mono);font-size:18px;font-weight:600;line-height:1.1}
+.ring .lbl small{font-size:11px;color:var(--ink-2);font-weight:400}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.mode{text-align:left;display:flex;flex-direction:column;gap:4px;background:var(--board);border:1.5px solid var(--line);border-radius:var(--r);padding:14px 16px;min-height:110px}
+.mode:hover{border-color:var(--ink-2)}
+.mode h3{font-size:22px;text-transform:uppercase}
+.mode p{margin:0;color:var(--ink-2);font-size:14px}
+.mode .meta{margin-top:auto;font-family:var(--mono);font-size:12px;color:var(--led-ink)}
+.domains{display:flex;flex-direction:column;gap:2px}
+.dom{display:grid;grid-template-columns:44px minmax(0,1fr) 120px 52px;gap:12px;align-items:center;padding:10px 8px;border-radius:8px;background:none;border:0;text-align:left;width:100%}
+.dom:hover{background:var(--board-2)}
+.dom .ref{font-family:var(--display);font-weight:800;font-size:20px;color:var(--ink-2)}
+.dom .nm{font-weight:700;min-width:0}
+.dom .nm small{display:block;font-weight:400;color:var(--ink-2);font-size:13px}
+.meter{height:8px;border-radius:4px;background:var(--board-2);border:1px solid var(--line);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--led);border-radius:4px}
+.dom .pct{font-family:var(--mono);font-size:14px;text-align:right}
+.sectionhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.sectionhead h2{font-size:22px;text-transform:uppercase}
+.foot{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;color:var(--ink-2);font-size:13px}
+
+/* quiz */
+.qtop{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.pips{display:flex;gap:4px;flex:1;min-width:160px}
+.pips i{flex:1;height:8px;border-radius:3px;background:var(--board-2);border:1px solid var(--line)}
+.pips i.ok{background:var(--ok);border-color:var(--ok)}
+.pips i.bad{background:var(--bad);border-color:var(--bad)}
+.pips i.now{background:var(--led);border-color:var(--led)}
+.combo{font-family:var(--mono);font-weight:600;font-size:14px;color:var(--led-ink);background:var(--led-soft);border-radius:999px;padding:3px 10px;min-width:62px;text-align:center}
+.combo.zero{color:var(--ink-2);background:var(--board-2)}
+.combo.pop{animation:pop .35s ease}
+@keyframes pop{40%{transform:scale(1.25)}}
+.card{background:var(--board);border:1px solid var(--line);border-radius:var(--r);padding:22px}
+.card.shake{animation:shake .3s ease}
+@keyframes shake{20%{transform:translateX(-6px)}50%{transform:translateX(5px)}80%{transform:translateX(-3px)}}
+.chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.chip{font-family:var(--display);font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--line);border-radius:4px;padding:2px 8px;color:var(--ink-2)}
+.chip.hot{color:var(--led-ink);border-color:var(--led);background:var(--led-soft)}
+.ticket{border-left:3px solid var(--ink-2);background:var(--board-2);padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:14px}
+.ticket .silk{font-size:12px;display:block;margin-bottom:2px}
+.ticket q{font-style:italic;quotes:"\201C" "\201D"}
+.qtext{font-size:21px;font-weight:700;line-height:1.35;margin:0 0 18px;max-width:62ch}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:12px;align-items:center;text-align:left;background:var(--board);border:1.5px solid var(--line);border-radius:8px;padding:12px 14px;min-height:54px;font-size:17px;width:100%}
+.opt:hover:not([disabled]){border-color:var(--ink-2);background:var(--board-2)}
+.opt .k{font-family:var(--mono);font-weight:600;font-size:14px;width:28px;height:28px;border-radius:6px;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--ink-2)}
+.opt.sel{border-color:var(--ink)}
+.opt.sel .k{background:var(--ink);color:var(--board);border-color:var(--ink)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.right .k{background:var(--ok);border-color:var(--ok);color:var(--board)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.wrong .k{background:var(--bad);border-color:var(--bad);color:var(--board)}
+.opt[disabled]{cursor:default}
+.opt .tag{font-family:var(--mono);font-size:12px;color:var(--ink-2)}
+.opt .ord{font-family:var(--mono);font-weight:600;color:var(--led-ink)}
+.qactions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
+.guess{display:inline-flex;align-items:center;gap:8px;border:1.5px dashed var(--line);border-radius:999px;padding:6px 14px;background:transparent;color:var(--ink-2);font-size:14px;min-height:36px}
+.guess[aria-pressed="true"]{border-style:solid;border-color:var(--led);color:var(--led-ink);background:var(--led-soft)}
+.typein{display:flex;gap:10px;flex-wrap:wrap}
+.typein input{flex:1;min-width:0;font-family:var(--mono);font-size:20px;padding:12px 14px;border-radius:8px;border:1.5px solid var(--line);background:var(--board)}
+
+.fb{margin-top:18px;border-radius:var(--r);border:1.5px solid var(--line);overflow:hidden}
+.fb.ok{border-color:var(--ok)}
+.fb.bad{border-color:var(--bad)}
+.fb .head{display:flex;align-items:center;gap:12px;padding:12px 16px;flex-wrap:wrap}
+.fb.ok .head{background:var(--ok-soft)}
+.fb.bad .head{background:var(--bad-soft)}
+.fb .head h3{font-size:26px;text-transform:uppercase}
+.fb.ok .head h3{color:var(--ok)}
+.fb.bad .head h3{color:var(--bad)}
+.fb .head .xp{font-family:var(--mono);font-size:13px;color:var(--led-ink);margin-left:auto}
+.fb .body{padding:14px 16px;display:flex;flex-direction:column;gap:12px;background:var(--board)}
+.fb .blk .silk{display:block;font-size:12px;margin-bottom:2px}
+.fb .blk p{margin:0;max-width:66ch}
+.hook{display:flex;gap:10px;align-items:flex-start;background:var(--led-soft);border-radius:8px;padding:10px 12px}
+.hook .silk{color:var(--led-ink);flex:none;padding-top:2px}
+.hook p{margin:0;font-weight:700}
+details.others{border-top:1px solid var(--line);padding-top:10px}
+details.others summary{cursor:pointer;color:var(--ink-2);font-size:14px}
+details.others ul{margin:8px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:15px}
+.ai{border:1px solid var(--line);border-radius:8px;padding:12px;background:var(--board-2);display:flex;flex-direction:column;gap:10px}
+.ai .out p{margin:0 0 8px}
+.ai .out ul{margin:0 0 8px;padding-left:18px}
+.ai .ask{display:flex;gap:8px}
+.ai .ask input{flex:1;min-width:0;padding:8px 12px;border-radius:8px;border:1.5px solid var(--line);background:var(--board)}
+.ai .thinking{color:var(--ink-2);font-style:italic}
+.nextbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--line);background:var(--board)}
+.nextbar .note{color:var(--ink-2);font-size:14px;flex:1;min-width:180px}
+
+/* lightning */
+.timer{height:10px;border-radius:5px;background:var(--board-2);border:1px solid var(--line);overflow:hidden;flex:1;min-width:160px}
+.timer i{display:block;height:100%;background:var(--led);transition:width .1s linear}
+.bigscore{font-family:var(--display);font-weight:800;font-size:30px}
+.flash{margin-top:14px;padding:10px 14px;border-radius:8px;font-weight:700}
+.flash.ok{background:var(--ok-soft);color:var(--ok)}
+.flash.bad{background:var(--bad-soft);color:var(--bad)}
+
+/* summary */
+.score{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.score .n{font-family:var(--display);font-weight:800;font-size:clamp(64px,14vw,96px);line-height:.9}
+.score .of{font-family:var(--display);font-size:32px;color:var(--ink-2)}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tile{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--board-2)}
+.tile b{display:block;font-family:var(--mono);font-size:20px}
+.tile span{font-size:13px;color:var(--ink-2)}
+.miss{border-top:1px solid var(--line);padding:12px 0;display:flex;flex-direction:column;gap:4px}
+.miss:first-child{border-top:0}
+.miss .a{color:var(--ok);font-weight:700}
+.miss .h{color:var(--led-ink);font-size:14px}
+
+/* editor */
+.ed{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:16px;align-items:start}
+.list{display:flex;flex-direction:column;gap:2px;max-height:70vh;overflow:auto;margin-top:10px}
+.li{display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;text-align:left;border:0;background:none;padding:8px;border-radius:6px;font-size:14px;width:100%}
+.li:hover{background:var(--board-2)}
+.li.on{background:var(--led-soft)}
+.li .ref{font-family:var(--display);font-weight:800;color:var(--ink-2)}
+.li .txt{min-width:0;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.badge{font-family:var(--mono);font-size:11px;border-radius:4px;padding:0 5px;border:1px solid var(--line);color:var(--ink-2);margin-right:4px;white-space:nowrap}
+.badge.hot{border-color:var(--led);color:var(--led-ink)}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label,.field .lab{font-size:13px;font-weight:700;color:var(--ink-2)}
+.field input,.field select,.field textarea,.filters input,.filters select{padding:9px 11px;border-radius:7px;border:1.5px solid var(--line);background:var(--board);width:100%;min-width:0}
+.field textarea{min-height:64px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.optrow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:start;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--board-2)}
+.optrow .cols{display:flex;flex-direction:column;gap:6px;min-width:0}
+.optrow input[type=text],.optrow textarea{padding:8px 10px;border-radius:6px;border:1.5px solid var(--line);background:var(--board);width:100%}
+.optrow textarea{min-height:44px;font-size:14px}
+.optrow .pick{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-2);padding-top:8px}
+.filters{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.filters input{grid-column:1/-1}
+.io textarea{width:100%;min-height:120px;font-family:var(--mono);font-size:12px;padding:10px;border-radius:7px;border:1.5px solid var(--line);background:var(--board)}
+.settings{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--board);padding:10px 16px;border-radius:8px;font-weight:700;z-index:20;max-width:calc(100% - 32px);box-shadow:0 6px 20px rgba(0,0,0,.2)}
+
+@media (max-width:720px){
+  .modes{grid-template-columns:1fr 1fr}
+  .ed{grid-template-columns:minmax(0,1fr)}
+  .list{max-height:40vh}
+  .tiles{grid-template-columns:1fr 1fr}
+  .grid2,.settings{grid-template-columns:1fr}
+}
+@media (max-width:480px){
+  .hero{grid-template-columns:1fr}
+  .ring{display:none}
+  .modes{grid-template-columns:1fr}
+  .dom{grid-template-columns:36px minmax(0,1fr) 46px}
+  .dom .meter{grid-column:2/4}
+  .dom .pct{grid-row:1;grid-column:3}
+  .qtext{font-size:19px}
+  .card{padding:16px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+  <div class="bar">
+    <button class="brand" data-act="home" aria-label="Core 1 Bench home"><b>Core 1 Bench</b><span>220-1201</span></button>
+    <div class="spacer"></div>
+    <div class="stat" title="Days in a row you've studied"><span class="led" id="streakLed"></span><strong id="streakN">0</strong>-day streak</div>
+    <div class="stat" title="Experience points"><strong id="xpN">0</strong> XP · lvl <strong id="lvlN">1</strong></div>
+  </div>
+  <main id="view"></main>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="bank.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ───────── constants ───────── */
+const DOMAINS={
+  1:{name:"Mobile Devices",short:"Mobile",w:13},
+  2:{name:"Networking",short:"Networking",w:23},
+  3:{name:"Hardware",short:"Hardware",w:25},
+  4:{name:"Virtualization & Cloud",short:"Virt & Cloud",w:11},
+  5:{name:"Hardware & Network Troubleshooting",short:"Troubleshooting",w:28}
+};
+const MIN=60e3, DAY=864e5;
+const INTERVAL=[0,10*MIN,DAY,3*DAY,7*DAY,21*DAY];
+const LETTERS="ABCDEFGH";
+const FACTS=window.FACTS||{};
+const BANK=window.BANK||[];
+
+/* ───────── helpers ───────── */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const sampleN=(a,n)=>shuffle(a).slice(0,n);
+const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const clone=o=>JSON.parse(JSON.stringify(o));
+const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let toastT;
+function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2600)}
+
+/* ───────── state ───────── */
+const defState=()=>({v:1,stats:{},xp:0,days:{},recent:[],lightningBest:0,bestCombo:0,settings:{roundLen:10,goal:30,autoNext:false},updatedAt:0});
+const defBank=()=>({v:1,overrides:{},added:{},hidden:[],updatedAt:0});
+let S=Object.assign(defState(),LS.get("c1b.state")||{});
+let B=Object.assign(defBank(),LS.get("c1b.bank")||{});
+S.settings=Object.assign(defState().settings,S.settings||{});
+
+/* ───────── persistence: this browser always, plus the viewer's private db space when available ───────── */
+const remote={ok:false,refs:{},status:"device"};
+const writer={busy:{},again:{},timers:{}};
+function setSync(s){remote.status=s;const el=$("#syncNote");if(el)el.textContent=syncLabel()}
+function syncLabel(){return({device:"Progress is saved in this browser.",syncing:"Connecting to your account…",account:"Progress is saved to your Claude account.",error:"Couldn't reach your account. Progress is saved in this browser for now."})[remote.status]}
+function save(kind){
+  const obj=kind==="state"?S:B; obj.updatedAt=Date.now();
+  LS.set("c1b."+kind,obj);
+  if(!remote.ok)return;
+  clearTimeout(writer.timers[kind]); writer.timers[kind]=setTimeout(()=>flush(kind),1500);
+}
+async function flush(kind){
+  if(!remote.ok)return;
+  if(writer.busy[kind]){writer.again[kind]=true;return}
+  writer.busy[kind]=true;
+  try{await remote.refs[kind].set(clone(kind==="state"?S:B));if(remote.status!=="account")setSync("account")}
+  catch(e){setSync("error");if(e&&e.code==="quota_exceeded")toast("Your account storage is full. Progress is still saved in this browser.")}
+  writer.busy[kind]=false;
+  if(writer.again[kind]){writer.again[kind]=false;flush(kind)}
+}
+document.addEventListener("visibilitychange",()=>{if(document.hidden){["state","bank"].forEach(k=>{if(writer.timers[k]){clearTimeout(writer.timers[k]);writer.timers[k]=null;flush(k)}})}});
+const timeout=(p,ms)=>Promise.race([p,new Promise((_,r)=>setTimeout(()=>r({code:"timeout"}),ms))]);
+async function connect(){
+  if(!(window.claude&&window.claude.use)){setSync("device");return}
+  try{
+    const [db,user]=await Promise.all([claude.use("db"),claude.use("user")]);
+    if(!db||!user){setSync("device");return}
+    const uid=await user.id(); if(!uid){setSync("device");return}
+    setSync("syncing");
+    remote.refs.state=db.doc("data/users/"+uid+"/state");
+    remote.refs.bank=db.doc("data/users/"+uid+"/bank");
+    const [rs,rb]=await timeout(Promise.all([remote.refs.state.get(),remote.refs.bank.get()]),10000);
+    remote.ok=true;
+    let changed=false;
+    if(rs.exists&&(rs.data().updatedAt||0)>(S.updatedAt||0)){S=Object.assign(defState(),clone(rs.data()));S.settings=Object.assign(defState().settings,S.settings||{});LS.set("c1b.state",S);changed=true}
+    else if(S.updatedAt)flush("state");
+    if(rb.exists&&(rb.data().updatedAt||0)>(B.updatedAt||0)){B=Object.assign(defBank(),clone(rb.data()));LS.set("c1b.bank",B);changed=true}
+    else if(B.updatedAt)flush("bank");
+    setSync("account");
+    if(changed&&(view==="home"||view==="editor"))render();
+  }catch(e){setSync(remote.ok?"account":"error")}
+}
+
+/* Claude, for "explain it another way" and fresh questions. Absent → those buttons stay hidden. */
+let AI=null;
+async function connectAI(){
+  if(!(window.claude&&window.claude.use))return;
+  try{AI=await claude.use("sample")}catch(e){AI=null}
+  if(AI&&(view==="home"||view==="quiz"||view==="editor"))render();
+}
+
+/* ───────── question pool ───────── */
+function builtIn(id){return BANK.find(q=>q.id===id)}
+function resolve(id){
+  if(id.startsWith("g:"))return genFromId(id);
+  if(B.added[id])return B.added[id];
+  if(B.overrides[id])return Object.assign({},B.overrides[id],{id});
+  return builtIn(id)||null;
+}
+function allQuestions(){
+  const out=[];
+  for(const q of BANK){if(B.hidden.includes(q.id))continue;out.push(B.overrides[q.id]?Object.assign({},B.overrides[q.id],{id:q.id}):q)}
+  for(const q of Object.values(B.added))if(!B.hidden.includes(q.id))out.push(q);
+  return out;
+}
+
+/* ───────── generated rapid-fire questions from FACTS ───────── */
+const G={
+  port(key){const f=(FACTS.ports||[]).find(x=>x.p===key);if(!f)return null;
+    const others=sampleN(FACTS.ports.filter(x=>x!==f),3);const o=[f,...others];const w={};others.forEach((x,i)=>w[i+1]=`${x.n} is port ${x.p}, used for ${x.d}.`);
+    return {id:"g:port:"+key,d:2,t:"Ports",type:"mc",gen:true,q:`Port ${f.p} belongs to which protocol?`,o:o.map(x=>x.n),a:0,w,x:`${f.n} runs on ${f.t} ${f.p}, used for ${f.d}.`,h:`${f.p} → ${f.n}`}},
+  portIn(key){const f=(FACTS.ports||[]).find(x=>x.p===key);if(!f)return null;
+    const parts=f.p.split(/[\/-]/);
+    return {id:"g:portIn:"+key,d:2,t:"Ports",type:"input",gen:true,q:`Which port number does ${f.n} use?`,ans:[f.p,...parts],x:`${f.n} runs on ${f.t} ${f.p}, used for ${f.d}.`,h:`${f.n} → ${f.p}`}},
+  raid(key){const r=(FACTS.raid||[]).find(x=>x.l===key);if(!r)return null;
+    const others=FACTS.raid.filter(x=>x!==r);const w={};others.forEach((x,i)=>w[i+1]=`RAID ${x.l} is ${x.d}.`);
+    return {id:"g:raid:"+key,d:3,t:"RAID",type:"mc",gen:true,q:`Which RAID level is ${r.d}?`,o:[r,...others].map(x=>"RAID "+x.l),a:0,w,x:`RAID ${r.l}: ${r.d}. It needs at least ${r.min} drives and survives ${r.tol==="none"?"no drive failures":"losing "+r.tol}.`,h:`RAID ${r.l} = ${r.d}`}},
+  raidMin(key){const r=(FACTS.raid||[]).find(x=>x.l===key);if(!r)return null;
+    return {id:"g:raidMin:"+key,d:3,t:"RAID",type:"input",gen:true,q:`What's the minimum number of drives for RAID ${r.l}?`,ans:[String(r.min)],x:`RAID ${r.l} (${r.d}) needs at least ${r.min} drives.`,h:"0 and 1 need 2. RAID 5 needs 3. RAID 6 and 10 need 4."}},
+  wifi(key){const s=(FACTS.wifi||[]).find(x=>x.s===key);if(!s)return null;
+    const bands=[...new Set(FACTS.wifi.map(x=>x.b))];const others=sampleN(bands.filter(b=>b!==s.b),3);const w={};
+    others.forEach((b,i)=>w[i+1]=`${FACTS.wifi.filter(x=>x.b===b).map(x=>x.s).join(" and ")} use${FACTS.wifi.filter(x=>x.b===b).length>1?"":"s"} ${b}.`);
+    return {id:"g:wifi:"+key,d:2,t:"Wi-Fi standards",type:"mc",gen:true,q:`Which band does ${s.s}${s.g?" ("+s.g+")":""} use?`,o:[s.b,...others],a:0,w,x:`${s.s}${s.g?" ("+s.g+")":""} uses ${s.b}, with a max of ${s.m}.`,h:"a = 5 GHz. b and g = 2.4 GHz. n = both. ac = 5 GHz. ax = 2.4, 5, and 6 GHz for 6E."}},
+  wifiGen(key){const s=(FACTS.wifi||[]).find(x=>x.g===key);if(!s)return null;
+    const others=sampleN(FACTS.wifi.filter(x=>x!==s),3);const w={};others.forEach((x,i)=>w[i+1]=`${x.s} is ${x.g||"a pre-numbering standard"} (${x.b}).`);
+    return {id:"g:wifiGen:"+key,d:2,t:"Wi-Fi standards",type:"mc",gen:true,q:`Which IEEE standard is ${s.g}?`,o:[s,...others].map(x=>x.s),a:0,w,x:`${s.g} is ${s.s}: ${s.b}, up to ${s.m}.`,h:"n = 4, ac = 5, ax = 6."}},
+  ram(key){const r=(FACTS.ram||[]).find(x=>x.k===key);if(!r)return null;
+    const pins=[...new Set(FACTS.ram.map(x=>x.pins))];const others=sampleN(pins.filter(p=>p!==r.pins),3);const w={};
+    others.forEach((p,i)=>w[i+1]=`${p} pins is ${FACTS.ram.filter(x=>x.pins===p).map(x=>x.k).join(" and ")}.`);
+    return {id:"g:ram:"+key,d:3,t:"Memory",type:"mc",gen:true,q:`How many pins does a ${r.k} have?`,o:[r.pins,...others],a:0,w,x:`A ${r.k} has ${r.pins} pins.${r.pins==="288"?" DDR4 and DDR5 DIMMs both have 288, so the notch position is what keeps them apart.":""}`,h:"DIMM: 240 (DDR3), 288 (DDR4 and DDR5). SO-DIMM: 204, 260, 262."}},
+  usb(key){const u=(FACTS.usb||[]).find(x=>x.v===key);if(!u)return null;
+    const others=sampleN(FACTS.usb.filter(x=>x!==u),3);const w={};others.forEach((x,i)=>w[i+1]=`${x.s} is ${x.v}.`);
+    return {id:"g:usb:"+key,d:3,t:"USB",type:"mc",gen:true,q:`What's the max speed of ${u.v}?`,o:[u,...others].map(x=>x.s),a:0,w,x:`${u.v} tops out at ${u.s}.`,h:"480 Mbps → 5 → 10 → 20 → 40 Gbps."}},
+  cable(key){const c=(FACTS.cables||[]).find(x=>x.c===key);if(!c)return null;
+    const all=[...FACTS.cables.map(x=>x.c),"Cat 5"];const others=all.filter(x=>x!==c.c);const w={};
+    others.forEach((x,i)=>{const f=FACTS.cables.find(y=>y.c===x);w[i+1]=f?`${x} does ${f.s}.`:"Cat 5 (no 'e') is legacy 100 Mbps."});
+    return {id:"g:cable:"+key,d:2,t:"Cabling",type:"mc",gen:true,q:`Which cable category is rated for ${c.s}?`,o:[c.c,...others],a:0,w,x:`${c.c} is rated for ${c.s}. Copper Ethernet runs max out at ${c.r}.`,h:"5e = 1 Gig. 6 = 10 Gig short runs. 6a = 10 Gig the full 100 m."}}
+};
+const GEN_KEYS={
+  port:()=>(FACTS.ports||[]).map(x=>x.p), portIn:()=>(FACTS.ports||[]).map(x=>x.p),
+  raid:()=>(FACTS.raid||[]).map(x=>x.l), raidMin:()=>(FACTS.raid||[]).map(x=>x.l),
+  wifi:()=>(FACTS.wifi||[]).map(x=>x.s), wifiGen:()=>(FACTS.wifi||[]).filter(x=>x.g).map(x=>x.g),
+  ram:()=>(FACTS.ram||[]).map(x=>x.k), usb:()=>(FACTS.usb||[]).map(x=>x.v), cable:()=>(FACTS.cables||[]).map(x=>x.c)
+};
+const GEN_DOMAIN={port:2,portIn:2,wifi:2,wifiGen:2,cable:2,raid:3,raidMin:3,ram:3,usb:3};
+function genFromId(id){const [,kind,...rest]=id.split(":");const key=rest.join(":");return G[kind]?G[kind](key):null}
+function randomGen(domain){
+  const kinds=Object.keys(G).filter(k=>!domain||GEN_DOMAIN[k]===domain);
+  if(!kinds.length)return null;
+  const k=kinds[Math.floor(Math.random()*kinds.length)];const keys=GEN_KEYS[k]();
+  return G[k](keys[Math.floor(Math.random()*keys.length)]);
+}
+
+/* ───────── spacing: which questions are due ───────── */
+function weightFor(id,now){
+  const st=S.stats[id]; if(!st||st.b==null)return 4;
+  if(st.b===0)return 7;
+  return now-st.l>INTERVAL[st.b]?3:0.35;
+}
+function weighted(items,n){
+  const pool=items.slice(),out=[];
+  while(out.length<n&&pool.length){
+    const tot=pool.reduce((s,x)=>s+x.w,0);let r=Math.random()*tot,i=0;
+    for(;i<pool.length;i++){r-=pool[i].w;if(r<=0)break}
+    out.push(pool.splice(Math.min(i,pool.length-1),1)[0].q);
+  }
+  return out;
+}
+function buildSprint(n,domain){
+  const now=Date.now(),recent=new Set(S.recent);
+  const pool=allQuestions().filter(q=>!domain||q.d===domain);
+  const genCount=(!domain||domain===2||domain===3)?Math.max(1,Math.round(n*0.2)):0;
+  const scored=pool.map(q=>({q,w:weightFor(q.id,now)*(domain?1:DOMAINS[q.d].w/20)*(recent.has(q.id)?0.12:1)}));
+  const picks=weighted(scored,n-genCount);
+  for(let i=0;i<genCount;i++){
+    let g=null;for(let t=0;t<8&&(!g||recent.has(g.id)||picks.some(p=>p.id===g.id||(p.gen&&p.t===g.t)));t++)g=randomGen(domain);
+    if(g)picks.splice(Math.floor(Math.random()*(picks.length+1)),0,g);
+  }
+  return picks;
+}
+function weakIds(){
+  return Object.entries(S.stats).filter(([id,st])=>(st.b===0||st.w>st.c)&&resolve(id)).sort((a,b)=>b[1].l-a[1].l).map(([id])=>id);
+}
+
+/* ───────── derived numbers ───────── */
+function streak(){
+  let n=0;const d=new Date();
+  if(!S.days[today()])d.setDate(d.getDate()-1);
+  for(;;){const k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");if(S.days[k]){n++;d.setDate(d.getDate()-1)}else break}
+  return n;
+}
+const level=()=>Math.floor(Math.sqrt(S.xp/60))+1;
+function mastery(d){
+  const qs=allQuestions().filter(q=>q.d===d);if(!qs.length)return {pct:0,seen:0,total:0,acc:null};
+  let m=0,seen=0,c=0,a=0;
+  for(const q of qs){const st=S.stats[q.id];if(st&&st.s){seen++;m+=Math.min(st.b||0,4)/4;c+=st.c;a+=st.s}}
+  return {pct:Math.round(100*m/qs.length),seen,total:qs.length,acc:a?Math.round(100*c/a):null};
+}
+function updateBar(){
+  const s=streak();$("#streakN").textContent=s;$("#streakLed").className="led"+(s?"":" off");
+  $("#xpN").textContent=S.xp.toLocaleString();$("#lvlN").textContent=level();
+}
+
+/* ───────── round state ───────── */
+let view="home", R=null, E=null;
+
+function startRound(mode,opts={}){
+  const n=S.settings.roundLen;
+  let qs=[];
+  if(mode==="sprint")qs=buildSprint(n,opts.domain||0);
+  else if(mode==="weak"){qs=weakIds().slice(0,n).map(resolve).filter(Boolean);if(!qs.length){toast("No weak spots right now. Run a sprint to find some.");return}}
+  else if(mode==="list")qs=opts.list.map(x=>typeof x==="string"?resolve(x):x).filter(Boolean);
+  else if(mode==="lightning")qs=[randomGen()];
+  if(!qs.length){toast("No questions match that yet.");return}
+  R={mode,domain:opts.domain||0,queue:qs.map(q=>({q,comeback:false})),i:0,results:[],combo:0,maxCombo:0,xp:0,
+     timeLeft:60000,lastTick:0,flash:null,cur:null,label:opts.label||""};
+  view="quiz";loadCur();render();
+  if(mode==="lightning")tickLightning();
+}
+function loadCur(){
+  const item=R.queue[R.i];const q=item.q;
+  const n=(q.o||[]).length;let order=shuffle([...Array(n).keys()]);
+  if(q.type==="order"&&n>1){let t=0;while(order.every((v,i)=>v===i)&&t++<10)order=shuffle(order)}
+  R.cur={q,comeback:item.comeback,order,picked:[],answered:false,ok:null,guess:false,input:"",ai:null,shown:Date.now()};
+}
+const norm=s=>String(s).toLowerCase().replace(/\bport\b|\btcp\b|\budp\b/g,"").replace(/[\s,;–—-]+/g,"/").replace(/\/+/g,"/").replace(/^\/|\/$/g,"");
+
+function grade(){
+  const c=R.cur,q=c.q;if(c.answered)return;
+  let ok=false;
+  if(q.type==="mc")ok=c.picked[0]===q.a;
+  else if(q.type==="multi"){const want=[...q.a].sort().join(),got=[...c.picked].sort().join();ok=want===got}
+  else if(q.type==="order")ok=c.picked.length===q.o.length&&c.picked.every((v,i)=>v===i);
+  else if(q.type==="input"){const v=norm(c.input);ok=!!v&&(q.ans||[]).some(a=>norm(a)===v)}
+  c.answered=true;c.ok=ok;
+  // stats
+  const st=S.stats[q.id]||(S.stats[q.id]={s:0,c:0,w:0,b:null,l:0});
+  st.s++;st.l=Date.now();
+  if(ok){st.c++;st.b=c.comeback?1:c.guess?1:(st.b==null?2:Math.min(5,st.b+1))}else{st.w++;st.b=0}
+  S.days[today()]=(S.days[today()]||0)+1;
+  S.recent=[q.id,...S.recent.filter(x=>x!==q.id)].slice(0,30);
+  // combo + xp
+  let gain=0;
+  if(ok){R.combo++;R.maxCombo=Math.max(R.maxCombo,R.combo);gain=c.guess?5:c.comeback?8:10+Math.min(R.combo-1,10)*2}
+  else R.combo=0;
+  if(R.mode==="lightning")gain=ok?5+Math.min(R.combo,10):0;
+  c.gain=gain;R.xp+=gain;S.xp+=gain;S.bestCombo=Math.max(S.bestCombo,R.maxCombo);
+  R.results.push({id:q.id,q,ok,guess:c.guess,comeback:c.comeback,picked:c.picked.slice(),input:c.input});
+  // missed? bring it back three questions later
+  if(!ok&&R.mode!=="lightning"&&!c.comeback&&!R.queue.slice(R.i+1).some(x=>x.q.id===q.id)){
+    R.queue.splice(Math.min(R.i+4,R.queue.length),0,{q,comeback:true});
+  }
+  save("state");updateBar();
+  if(R.mode==="lightning"){
+    R.flash={ok,q,c};render();
+    setTimeout(()=>{if(!R||R.mode!=="lightning"||view!=="quiz")return;R.flash=null;R.queue.push({q:nextLightningQ(),comeback:false});R.i++;loadCur();render();tickLightning()},ok?450:1700);
+    return;
+  }
+  render();
+  if(!ok){const card=$(".card");if(card){card.classList.remove("shake");void card.offsetWidth;card.classList.add("shake")}}
+  if(ok&&S.settings.autoNext)setTimeout(()=>{if(R&&R.cur===c&&view==="quiz")next()},1400);
+}
+function nextLightningQ(){
+  const recent=R.results.slice(-6).map(r=>r.id);let g=null;
+  for(let t=0;t<8&&(!g||recent.includes(g.id));t++)g=randomGen();
+  return g;
+}
+function next(){
+  if(!R)return;
+  if(R.cur&&R.cur.ai&&R.cur.ai.ac)R.cur.ai.ac.abort();
+  if(R.i+1>=R.queue.length){finish();return}
+  R.i++;loadCur();render();
+}
+function finish(){
+  if(!R)return;
+  if(R.mode==="lightning"){const sc=R.results.filter(r=>r.ok).length;if(sc>S.lightningBest){S.lightningBest=sc;R.newBest=true}save("state")}
+  view="summary";render();
+}
+let lightT;
+function tickLightning(){
+  clearTimeout(lightT);
+  if(!R||R.mode!=="lightning"||view!=="quiz")return;
+  const now=Date.now();
+  if(R.lastTick&&!R.flash&&!R.cur.answered)R.timeLeft-=now-R.lastTick;
+  R.lastTick=now;
+  const bar=$("#timerBar");if(bar)bar.style.width=Math.max(0,R.timeLeft/600)+"%";
+  const tl=$("#timeLeft");if(tl)tl.textContent=Math.max(0,Math.ceil(R.timeLeft/1000))+"s";
+  if(R.timeLeft<=0){finish();return}
+  lightT=setTimeout(tickLightning,100);
+}
+
+/* ───────── Claude: explain another way + follow-ups ───────── */
+const TUTOR=`You're tutoring someone for the CompTIA A+ Core 1 (220-1201) exam. They already have a solid IT foundation and they have ADHD, so keep it tight and concrete.
+Rules: under 120 words. Plain language. Use one real-world analogy or on-the-job scenario. Focus on the misconception behind their pick, not just restating the answer. No headings, no preamble. Short paragraphs, or up to 3 bullets starting with "- ". You may bold one key phrase with **like this**.`;
+function qContext(c){
+  const q=c.q;let s=`Question: ${q.ticket?"Ticket: \""+q.ticket+"\" ":""}${q.q}\n`;
+  if(q.type==="mc"||q.type==="multi"){
+    s+="Options:\n"+q.o.map((o,i)=>`- ${o}${(Array.isArray(q.a)?q.a.includes(i):q.a===i)?" (correct)":""}`).join("\n")+"\n";
+    s+="They picked: "+(c.picked.length?c.picked.map(i=>q.o[i]).join("; "):"nothing")+"\n";
+  }else if(q.type==="order"){s+="Correct order: "+q.o.join(" → ")+"\nTheir order: "+c.picked.map(i=>q.o[i]).join(" → ")+"\n"}
+  else s+=`Correct answer: ${(q.ans||[])[0]}\nThey typed: ${c.input||"(blank)"}\n`;
+  s+=`They were ${c.ok?"right":"wrong"}.${c.guess?" They said they were guessing.":""}\nReference explanation: ${q.x||""}`;
+  return s;
+}
+function md(t){
+  const lines=esc(t).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").split(/\n/);let h="",inList=false;
+  for(const l of lines){
+    if(/^\s*[-•]\s+/.test(l)){if(!inList){h+="<ul>";inList=true}h+="<li>"+l.replace(/^\s*[-•]\s+/,"")+"</li>"}
+    else{if(inList){h+="</ul>";inList=false}if(l.trim())h+="<p>"+l+"</p>"}
+  }
+  return h+(inList?"</ul>":"");
+}
+async function askClaude(follow){
+  const c=R&&R.cur;if(!c||!AI)return;
+  c.ai=c.ai||{msgs:[],text:"",busy:false,err:""};
+  if(c.ai.busy)return;
+  if(follow){
+    const v=follow.trim();if(!v)return;
+    c.ai.msgs.push({role:"assistant",content:c.ai.text||"(no answer)"},{role:"user",content:v});
+    c.ai.asked=v;
+  }else{
+    c.ai.msgs=[{role:"user",content:TUTOR+"\n\n"+qContext(c)+"\n\nExplain this a different way than the reference explanation, so it actually clicks."}];
+    c.ai.asked="";
+  }
+  c.ai.busy=true;c.ai.text="";c.ai.err="";renderAI();
+  const ac=new AbortController();c.ai.ac=ac;
+  try{
+    const r=await AI(c.ai.msgs,{signal:ac.signal,cache:false,onText:({text})=>{c.ai.text=text;renderAI()}});
+    c.ai.text=r.text;
+  }catch(e){
+    c.ai.text=e&&e.text||"";
+    if(e&&e.code==="cancelled"){}
+    else if(e&&e.code==="not_granted"){AI=null;c.ai.err="Claude wasn't allowed on this page, so this button is now hidden."}
+    else if(e&&e.code==="rate_limited")c.ai.err="Claude is busy right now. Try again in a minute.";
+    else c.ai.err="Claude couldn't answer that one. Try again later.";
+    if(c.ai.msgs.length>1&&follow)c.ai.msgs.splice(-2,2);
+  }
+  c.ai.busy=false;if(R&&R.cur===c)renderAI();
+}
+function aiHTML(c){
+  if(!AI&&!(c.ai&&c.ai.err))return "";
+  const a=c.ai;
+  if(!a)return `<div id="aiBox"><button class="btn small" data-act="ai-explain">Explain it another way <kbd>E</kbd></button></div>`;
+  return `<div id="aiBox" class="ai">
+    <span class="silk">Claude, explaining it differently</span>
+    ${a.asked?`<div class="silk" style="text-transform:none;letter-spacing:0">You asked: ${esc(a.asked)}</div>`:""}
+    <div class="out">${a.text?md(a.text):a.busy?`<p class="thinking">Thinking…</p>`:""}</div>
+    ${a.err?`<p style="margin:0;color:var(--bad)">${esc(a.err)}</p>`:""}
+    ${AI?`<form class="ask" data-form="ai-follow"><input id="aiFollow" type="text" placeholder="Still fuzzy? Ask a follow-up…" ${a.busy?"disabled":""} autocomplete="off"><button class="btn small" ${a.busy?"disabled":""}>Ask</button>${a.busy?`<button type="button" class="btn small ghost" data-act="ai-stop">Stop</button>`:""}</form>`:""}
+  </div>`;
+}
+function renderAI(){const box=$("#aiBox");if(box&&R&&R.cur)box.outerHTML=aiHTML(R.cur)}
+
+/* ───────── Claude: fresh questions ───────── */
+let genBusy=false;
+async function generateQuestions(d,topic){
+  if(!AI||genBusy)return;
+  genBusy=true;render();toast("Claude is writing 5 questions. This can take up to a minute.");
+  const example=JSON.stringify({t:"DNS",ticket:"I can ping 8.8.8.8 but websites won't load.",q:"What's the likely problem?",o:["DNS name resolution","The default gateway","DHCP","The subnet mask"],a:0,w:{"1":"If the gateway were wrong you couldn't reach 8.8.8.8 at all.","2":"They have a working IP.","3":"A wrong mask would also break routing."},x:"Reaching an IP but not a name is the classic DNS symptom.",h:"Numbers work, names don't → DNS."});
+  const have=allQuestions().filter(q=>q.d===d).map(q=>"- "+q.q).slice(0,60).join("\n");
+  const prompt=`Write 5 new multiple-choice practice questions for CompTIA A+ Core 1 (220-1201), domain ${d}.0 ${DOMAINS[d].name}${topic?", focused on: "+topic:""}.
+The learner has a solid foundation and ADHD: make them scenario-based and specific (like MeasureUp-quality items), with tempting distractors built on real misconceptions. Mix in help-desk tickets for about half.
+Every fact must be accurate for the 220-1201 objectives. Exactly 4 options, one correct. Put the correct answer at any index.
+"w" maps EVERY wrong option's index (as a string) to one or two sentences on why that pick is wrong. "x" is a 1–2 sentence explanation of why the answer is right. "h" is a short memory hook. "ticket" is optional (omit or use an empty string).
+Avoid repeating these existing questions:
+${have}
+Return only JSON shaped like {"questions":[ ... ]}, each item like:
+${example}`;
+  try{
+    const res=await AI.json(prompt,{modelTier:"default"});
+    const list=(res&&Array.isArray(res.questions))?res.questions:[];
+    let n=0;
+    for(const g of list){
+      if(!g||typeof g.q!=="string"||!Array.isArray(g.o)||g.o.length<2||!Number.isInteger(g.a)||g.a<0||g.a>=g.o.length)continue;
+      const id="ai-"+Date.now().toString(36)+"-"+n;
+      const w={};for(const [k,v] of Object.entries(g.w||{}))if(typeof v==="string")w[k]=v;
+      B.added[id]={id,d,t:String(g.t||DOMAINS[d].short).slice(0,40),type:"mc",ticket:g.ticket?String(g.ticket):"",q:g.q,o:g.o.map(String),a:g.a,w,x:String(g.x||""),h:String(g.h||""),ai:true,made:Date.now()};
+      n++;
+    }
+    if(n){save("bank");toast(`Added ${n} new ${DOMAINS[d].short} questions. They're tagged "Claude-made" in the editor.`)}
+    else toast("Claude's answer didn't contain usable questions. Try again.");
+  }catch(e){
+    if(e&&e.code==="not_granted"){AI=null;toast("Claude wasn't allowed on this page.")}
+    else if(e&&e.code==="rate_limited")toast("Claude is busy right now. Try again in a minute.");
+    else toast("Couldn't generate questions this time.");
+  }
+  genBusy=false;if(view==="home"||view==="editor")render();
+}
+
+/* ───────── views ───────── */
+function render(){
+  updateBar();
+  const v=$("#view");$("#wrap").classList.toggle("wide",view==="editor");
+  v.innerHTML=view==="home"?homeHTML():view==="quiz"?quizHTML():view==="summary"?summaryHTML():editorHTML();
+  afterRender();
+}
+function afterRender(){
+  if(view==="quiz"&&R&&R.cur){
+    const c=R.cur;
+    if(!c.answered&&c.q.type==="input"){const i=$("#typein");if(i){i.focus();i.value=c.input}}
+    else if(c.answered&&R.mode!=="lightning"){const n=$("#nextBtn");if(n)n.focus({preventScroll:true});const fb=$(".fb");if(fb){const r=fb.getBoundingClientRect();const by=Math.min(r.bottom-innerHeight+16,r.top-72);if(by>0)window.scrollBy({top:by,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}}
+    else if(!c.answered&&R.i>0)window.scrollTo({top:0})
+  }
+}
+
+function ringSVG(val,max){
+  const r=40,C=2*Math.PI*r,p=Math.min(1,val/max);
+  return `<svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true"><circle cx="48" cy="48" r="${r}" fill="none" stroke="var(--board-2)" stroke-width="9"/><circle cx="48" cy="48" r="${r}" fill="none" stroke="var(--led)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C*p} ${C}"/></svg>`;
+}
+function homeHTML(){
+  const t=S.days[today()]||0,goal=S.settings.goal;
+  const weak=weakIds().length;
+  const answered=Object.values(S.stats).reduce((s,x)=>s+x.s,0);
+  const hello=answered===0?"Ten questions. About five minutes.":t>=goal?"Goal hit today. Extra rounds still count.":t>0?`${goal-t} more to hit today's goal.`:"Ten questions. About five minutes.";
+  return `<div class="stack">
+  <section class="panel hero">
+    <div class="stack" style="gap:14px">
+      <div><h1>Quick sprint</h1><p>${esc(hello)} Mixed domains, weighted like the real exam. Anything you miss comes back a few questions later.</p></div>
+      <div class="row"><button class="btn primary go" data-act="sprint">Start a ${S.settings.roundLen}-question sprint <kbd>Enter</kbd></button></div>
+    </div>
+    <div class="ring" title="Questions answered today">${ringSVG(t,goal)}<div class="lbl tabnum">${t}<small>of ${goal} today</small></div></div>
+  </section>
+
+  <section class="modes">
+    <button class="mode" data-act="weak" ${weak?"":"aria-disabled=\"true\""}><span class="silk">Fix what you missed</span><h3>Weak spots</h3><p>Only the questions you've gotten wrong, until they stick.</p><span class="meta">${weak?weak+" waiting":"Nothing yet"}</span></button>
+    <button class="mode" data-act="lightning"><span class="silk">60 seconds</span><h3>Lightning</h3><p>Ports, RAID, Wi-Fi, RAM pins, USB speeds. Fast taps, no essays.</p><span class="meta">Best: ${S.lightningBest}</span></button>
+    ${AI?`<button class="mode" data-act="gen-weakest" ${genBusy?"disabled":""}><span class="silk">New material</span><h3>Fresh questions</h3><p>Claude writes 5 new scenario questions for your weakest domain.</p><span class="meta">${genBusy?"Writing…":"Adds to "+DOMAINS[weakestDomain()].short}</span></button>`
+         :`<button class="mode" data-act="editor"><span class="silk">Your bank</span><h3>Edit questions</h3><p>Fix wording, add your own, or hide ones you've mastered.</p><span class="meta">${allQuestions().length} questions</span></button>`}
+  </section>
+
+  <section class="panel">
+    <div class="sectionhead"><h2>Domains</h2><span class="silk">Tap one to drill it</span></div>
+    <div class="domains">${[1,2,3,4,5].map(d=>{const m=mastery(d);return `
+      <button class="dom" data-act="domain" data-d="${d}">
+        <span class="ref">D${d}</span>
+        <span class="nm">${esc(DOMAINS[d].name)}<small>${DOMAINS[d].w}% of exam · ${m.seen}/${m.total} seen${m.acc!=null?" · "+m.acc+"% right":""}</small></span>
+        <span class="meter" title="Mastery"><i style="width:${m.pct}%"></i></span>
+        <span class="pct tabnum">${m.pct}%</span>
+      </button>`}).join("")}</div>
+  </section>
+
+  <section class="panel">
+    <div class="sectionhead"><h2>Settings</h2><span class="silk" id="syncNote">${esc(syncLabel())}</span></div>
+    <div class="settings">
+      <div class="field"><label for="setLen">Questions per sprint</label><select id="setLen" data-set="roundLen">${[5,10,15,20].map(n=>`<option ${n===S.settings.roundLen?"selected":""}>${n}</option>`).join("")}</select></div>
+      <div class="field"><label for="setGoal">Daily goal</label><select id="setGoal" data-set="goal">${[10,20,30,50,80].map(n=>`<option ${n===S.settings.goal?"selected":""}>${n}</option>`).join("")}</select></div>
+      <div class="field"><label for="setAuto">After a right answer</label><select id="setAuto" data-set="autoNext"><option value="0" ${S.settings.autoNext?"":"selected"}>Wait for me</option><option value="1" ${S.settings.autoNext?"selected":""}>Move on by itself</option></select></div>
+    </div>
+    <div class="foot" style="margin-top:14px">
+      <div class="row"><button class="btn small" data-act="editor">Edit questions</button></div>
+      <button class="btn small ghost" data-act="reset-progress">${resetArmed?"Click again to erase all progress":"Reset progress"}</button>
+    </div>
+  </section>
+  <p class="foot" style="justify-content:center">Keys: <kbd>1</kbd>–<kbd>4</kbd> answer · <kbd>G</kbd> mark as a guess · <kbd>Enter</kbd> next · <kbd>E</kbd> ask Claude</p>
+  </div>`;
+}
+function weakestDomain(){let best=1,lo=1e9;for(const d of [1,2,3,4,5]){const m=mastery(d);const s=m.pct-DOMAINS[d].w/4;if(s<lo){lo=s;best=d}}return best}
+let resetArmed=false;
+
+function quizHTML(){
+  const c=R.cur,q=c.q,L=R.mode==="lightning";
+  const pips=L?"":R.queue.map((x,i)=>{const r=i<R.results.length?R.results[i]:null;return `<i class="${r?(r.ok?"ok":"bad"):i===R.i?"now":""}"></i>`}).join("");
+  const top=L?`<div class="qtop"><span class="bigscore tabnum">${R.results.filter(r=>r.ok).length}</span><span class="silk">right</span><div class="timer"><i id="timerBar" style="width:${Math.max(0,R.timeLeft/600)}%"></i></div><span class="mono tabnum" id="timeLeft">${Math.ceil(R.timeLeft/1000)}s</span><span class="combo ${R.combo?"":"zero"}">×${R.combo}</span><button class="btn small ghost" data-act="end">End</button></div>`
+   :`<div class="qtop"><div class="pips" aria-label="Question ${R.i+1} of ${R.queue.length}">${pips}</div><span class="combo ${R.combo?"":"zero"} ${c.answered&&c.ok&&R.combo>1?"pop":""}" title="Right answers in a row">×${R.combo}</span><button class="btn small ghost" data-act="end">End round</button></div>`;
+  const chips=`<div class="chips"><span class="chip">D${q.d} · ${esc(DOMAINS[q.d]?DOMAINS[q.d].short:"")}</span>${q.t?`<span class="chip">${esc(q.t)}</span>`:""}${c.comeback?`<span class="chip hot">Comeback</span>`:""}${q.ai?`<span class="chip">Claude-made</span>`:""}${q.type==="multi"?`<span class="chip hot">Pick ${q.a.length}</span>`:""}${q.type==="order"?`<span class="chip hot">Tap in order</span>`:""}</div>`;
+  const ticket=q.ticket?`<div class="ticket"><span class="silk">Help-desk ticket</span><q>${esc(q.ticket)}</q></div>`:"";
+  return `${top}<div class="card">${chips}${ticket}<p class="qtext">${esc(q.q)}</p>${bodyHTML(c)}${L?flashHTML():c.answered?feedbackHTML(c):""}</div>`;
+}
+function bodyHTML(c){
+  const q=c.q;
+  if(q.type==="input"){
+    return `<form class="typein" data-form="typein"><input id="typein" type="text" inputmode="text" autocomplete="off" placeholder="Type your answer" ${c.answered?"disabled":""} aria-label="Your answer"><button class="btn primary" ${c.answered?"disabled":""}>Check <kbd>Enter</kbd></button></form>`;
+  }
+  const isRight=i=>q.type==="mc"?i===q.a:q.type==="multi"?q.a.includes(i):false;
+  const btns=c.order.map((oi,pos)=>{
+    let cls="opt",tag="";
+    if(q.type==="order"){
+      const at=c.picked.indexOf(oi);
+      if(c.answered){cls+=c.picked[oi]===oi&&at===oi?" right":" wrong";tag=`<span class="tag">#${oi+1}</span>`}
+      else if(at>=0)cls+=" sel";
+      return `<button class="${cls}" data-act="pick" data-i="${oi}" ${c.answered?"disabled":""}><span class="k">${at>=0?at+1:LETTERS[pos]}</span><span>${esc(q.o[oi])}</span>${tag}</button>`;
+    }
+    const sel=c.picked.includes(oi);
+    if(c.answered){if(isRight(oi))cls+=" right";else if(sel)cls+=" wrong";if(sel)tag=`<span class="tag">your pick</span>`;else if(isRight(oi)&&q.type==="multi")tag=`<span class="tag">missed</span>`}
+    else if(sel)cls+=" sel";
+    return `<button class="${cls}" data-act="pick" data-i="${oi}" ${c.answered?"disabled":""} aria-pressed="${sel}"><span class="k">${LETTERS[pos]}</span><span>${esc(q.o[oi])}</span>${tag}</button>`;
+  }).join("");
+  let actions="";
+  if(!c.answered&&R.mode!=="lightning"){
+    const needCheck=q.type==="multi"||q.type==="order";
+    actions=`<div class="qactions">${needCheck?`<button class="btn primary" data-act="check" ${q.type==="order"&&c.picked.length<q.o.length?"disabled":""}>Check <kbd>Enter</kbd></button>`:""}${q.type==="order"&&c.picked.length?`<button class="btn small ghost" data-act="clear">Start over</button>`:""}<button class="guess" data-act="guess" aria-pressed="${c.guess}">I'm guessing <kbd>G</kbd></button></div>`;
+  }else if(!c.answered&&q.type==="multi"){actions=`<div class="qactions"><button class="btn primary" data-act="check">Check <kbd>Enter</kbd></button></div>`}
+  return `<div class="opts">${btns}</div>${actions}`;
+}
+function correctText(q){
+  if(q.type==="mc")return q.o[q.a];
+  if(q.type==="multi")return q.a.map(i=>q.o[i]).join(", ");
+  if(q.type==="order")return q.o.join(" → ");
+  return (q.ans||[])[0];
+}
+function letterOf(c,oi){const p=c.order.indexOf(oi);return p>=0?LETTERS[p]:""}
+function feedbackHTML(c){
+  const q=c.q,w=q.w||{};
+  let blocks="";
+  if(c.ok){
+    if(c.guess)blocks+=`<div class="blk"><p><strong>Lucky guess, but it counts.</strong> This one will come back soon to make sure it sticks.</p></div>`;
+    if(c.comeback)blocks+=`<div class="blk"><p><strong>You got it this time.</strong> It'll come back later to make sure it stuck.</p></div>`;
+    blocks+=`<div class="blk"><span class="silk">Why it's right</span><p>${esc(q.x)}</p></div>`;
+  }else{
+    if(q.type==="mc"){
+      const p=c.picked[0];
+      blocks+=`<div class="blk"><span class="silk">Why ${letterOf(c,p)} doesn't fit</span><p>${esc(w[p]||"That option doesn't match what the scenario describes.")}</p></div>`;
+      blocks+=`<div class="blk"><span class="silk">The answer: ${letterOf(c,q.a)}. ${esc(q.o[q.a])}</span><p>${esc(q.x)}</p></div>`;
+    }else if(q.type==="multi"){
+      const wrongPicks=c.picked.filter(i=>!q.a.includes(i)),missed=q.a.filter(i=>!c.picked.includes(i));
+      if(wrongPicks.length)blocks+=`<div class="blk"><span class="silk">Shouldn't be picked</span><ul style="margin:0;padding-left:18px">${wrongPicks.map(i=>`<li><strong>${esc(q.o[i])}</strong>: ${esc(w[i]||"")}</li>`).join("")}</ul></div>`;
+      if(missed.length)blocks+=`<div class="blk"><span class="silk">You missed</span><ul style="margin:0;padding-left:18px">${missed.map(i=>`<li><strong>${esc(q.o[i])}</strong>: ${esc(w[i]||"This one belongs too.")}</li>`).join("")}</ul></div>`;
+      blocks+=`<div class="blk"><span class="silk">The full answer: ${esc(correctText(q))}</span><p>${esc(q.x)}</p></div>`;
+    }else if(q.type==="order"){
+      const firstBad=c.picked.findIndex((v,i)=>v!==i);
+      blocks+=`<div class="blk"><span class="silk">Where it went off</span><p>Step ${firstBad+1} should be <strong>${esc(q.o[firstBad])}</strong>, but you put <strong>${esc(q.o[c.picked[firstBad]])}</strong>.</p></div>`;
+      blocks+=`<div class="blk"><span class="silk">Correct order</span><ol style="margin:0;padding-left:22px">${q.o.map(s=>`<li>${esc(s)}</li>`).join("")}</ol></div>`;
+      blocks+=`<div class="blk"><p>${esc(q.x)}</p></div>`;
+    }else{
+      blocks+=`<div class="blk"><span class="silk">You typed "${esc(c.input||"(nothing)")}". The answer is ${esc((q.ans||[])[0])}.</span><p>${esc(q.x)}</p></div>`;
+    }
+  }
+  if(q.h)blocks+=`<div class="hook"><span class="silk">Hook</span><p>${esc(q.h)}</p></div>`;
+  if((q.type==="mc")&&Object.keys(w).length){
+    const others=q.o.map((o,i)=>i).filter(i=>i!==q.a&&!(c.picked[0]===i&&!c.ok)&&w[i]);
+    if(others.length)blocks+=`<details class="others"><summary>Why the other options are wrong</summary><ul>${others.map(i=>`<li><strong>${letterOf(c,i)}. ${esc(q.o[i])}</strong>: ${esc(w[i])}</li>`).join("")}</ul></details>`;
+  }
+  blocks+=aiHTML(c);
+  const last=R.i+1>=R.queue.length;
+  const note=!c.ok?(c.comeback?"Still shaky. It's saved to Weak spots.":"This one comes back in a few questions."):R.combo>=3?`${R.combo} in a row.`:"";
+  return `<div class="fb ${c.ok?"ok":"bad"}"><div class="head"><h3>${c.ok?"Correct":"Not quite"}</h3>${c.gain?`<span class="xp">+${c.gain} XP</span>`:""}</div><div class="body">${blocks}</div>
+   <div class="nextbar"><span class="note">${esc(note)}</span>${!c.ok?`<button class="btn small ghost" data-act="edit-this">Edit this question</button>`:""}<button class="btn primary" id="nextBtn" data-act="next">${last?"See results":"Next"} <kbd>Enter</kbd></button></div></div>`;
+}
+function flashHTML(){
+  const f=R.flash;if(!f)return "";
+  return f.ok?`<div class="flash ok">Right. +${f.c.gain}</div>`:`<div class="flash bad">It's ${esc(correctText(f.q))}. ${esc(f.q.h||"")}</div>`;
+}
+
+function summaryHTML(){
+  const res=R.results,L=R.mode==="lightning";
+  const firsts=res.filter(r=>!r.comeback),right=firsts.filter(r=>r.ok).length;
+  const fixed=res.filter(r=>r.comeback&&r.ok).length;
+  const missed=[...new Map(res.filter(r=>!r.ok).map(r=>[r.id,r])).values()];
+  const stillMissed=missed.filter(m=>!res.some(r=>r.id===m.id&&r.comeback&&r.ok));
+  const head=L?`<div class="score"><span class="n tabnum">${res.filter(r=>r.ok).length}</span><span class="of">right in 60 seconds</span></div>${R.newBest?`<p class="silk" style="color:var(--led-ink)">New personal best</p>`:`<p class="silk">Best: ${S.lightningBest}</p>`}`
+    :`<div class="score"><span class="n tabnum">${right}</span><span class="of">/ ${firsts.length} on the first try</span></div>`;
+  const msg=L?"":right===firsts.length?"Clean sweep.":fixed?`You missed ${missed.length} and fixed ${fixed} on the comeback.`:missed.length?`${missed.length} to review below.`:"";
+  return `<div class="stack">
+   <section class="panel stack">
+     ${head}${msg?`<p style="margin:0;font-weight:700">${esc(msg)}</p>`:""}
+     <div class="tiles">
+       <div class="tile"><b class="tabnum">+${R.xp}</b><span>XP earned</span></div>
+       <div class="tile"><b class="tabnum">×${R.maxCombo}</b><span>Best streak</span></div>
+       <div class="tile"><b class="tabnum">${fixed}</b><span>Fixed on comeback</span></div>
+       <div class="tile"><b class="tabnum">${S.days[today()]||0}/${S.settings.goal}</b><span>Today's goal</span></div>
+     </div>
+     <div class="row">
+       <button class="btn primary go" data-act="${L?"lightning":"again"}">${L?"Go again":"Another sprint"} <kbd>Enter</kbd></button>
+       ${stillMissed.length?`<button class="btn" data-act="drill-missed">Drill these ${stillMissed.length} again</button>`:""}
+       <button class="btn ghost" data-act="home">Home</button>
+     </div>
+   </section>
+   ${missed.length?`<section class="panel"><div class="sectionhead"><h2>Review</h2><span class="silk">${stillMissed.length?"Still shaky: "+stillMissed.length:"All fixed"}</span></div>
+     ${missed.map(m=>`<div class="miss"><span class="silk">D${m.q.d} · ${esc(m.q.t||"")}</span><div>${esc(m.q.q)}</div><div class="a">${esc(correctText(m.q))}</div><div>${esc(m.q.x||"")}</div>${m.q.h?`<div class="h">${esc(m.q.h)}</div>`:""}</div>`).join("")}
+   </section>`:""}
+  </div>`;
+}
+
+/* ───────── editor ───────── */
+function editorInit(selId){
+  E={filter:{text:"",d:0,show:"all"},sel:null,draft:null,isNew:false,delArmed:false,io:"",ioOpen:false};
+  if(selId)selectQ(selId);
+}
+function selectQ(id){
+  const q=resolve(id);if(!q)return;
+  E.sel=id;E.isNew=false;E.delArmed=false;E.draft=clone(q);
+}
+function newQ(){
+  E.sel="u-"+Date.now().toString(36);E.isNew=true;E.delArmed=false;
+  E.draft={id:E.sel,d:E.filter.d||1,t:"",type:"mc",ticket:"",q:"",o:["","","",""],a:0,w:{},x:"",h:"",mine:true};
+}
+function edList(){
+  const f=E.filter,txt=f.text.toLowerCase();
+  const rows=[...BANK.map(q=>B.overrides[q.id]?Object.assign({},B.overrides[q.id],{id:q.id}):q),...Object.values(B.added)];
+  return rows.filter(q=>{
+    const hidden=B.hidden.includes(q.id),edited=!!B.overrides[q.id],mine=!!B.added[q.id];
+    if(f.d&&q.d!==f.d)return false;
+    if(f.show==="hidden"&&!hidden)return false;
+    if(f.show!=="hidden"&&f.show!=="all"&&hidden)return false;
+    if(f.show==="edited"&&!edited)return false;
+    if(f.show==="mine"&&!mine)return false;
+    if(f.show==="missed"){const st=S.stats[q.id];if(!st||!st.w)return false}
+    if(txt&&!(q.q+" "+(q.t||"")+" "+(q.o||[]).join(" ")+" "+(q.ticket||"")).toLowerCase().includes(txt))return false;
+    return true;
+  });
+}
+function editorHTML(){
+  const list=edList();
+  const left=`<section class="panel">
+    <div class="sectionhead"><h2>Question bank</h2><button class="btn small primary" data-act="ed-new">New question</button></div>
+    <div class="filters">
+      <input id="edSearch" type="search" placeholder="Search questions" value="${esc(E.filter.text)}" data-filter="text" aria-label="Search questions">
+      <select id="edDom" data-filter="d" aria-label="Domain"><option value="0">All domains</option>${[1,2,3,4,5].map(d=>`<option value="${d}" ${E.filter.d===d?"selected":""}>D${d} ${esc(DOMAINS[d].short)}</option>`).join("")}</select>
+      <select id="edShow" data-filter="show" aria-label="Show"><option value="all">All</option>${[["missed","I've missed"],["edited","Edited"],["mine","Added by me or Claude"],["hidden","Hidden"]].map(([v,l])=>`<option value="${v}" ${E.filter.show===v?"selected":""}>${l}</option>`).join("")}</select>
+    </div>
+    <div class="silk" style="margin-top:10px">${list.length} shown</div>
+    <div class="list" id="edList">${list.map(q=>{const st=S.stats[q.id];return `<button class="li ${E.sel===q.id?"on":""}" data-act="ed-sel" data-id="${esc(q.id)}"><span class="ref">D${q.d}</span><span><span class="txt">${esc(q.ticket?q.ticket+" ":"")}${esc(q.q)}</span>
+      ${B.overrides[q.id]?'<span class="badge hot">edited</span>':""}${q.ai?'<span class="badge hot">Claude-made</span>':B.added[q.id]?'<span class="badge hot">mine</span>':""}${B.hidden.includes(q.id)?'<span class="badge">hidden</span>':""}${st&&st.s?`<span class="badge">${st.c}/${st.s} right</span>`:""}</span></button>`}).join("")}</div>
+  </section>`;
+  return `<div class="stack"><div class="row" style="justify-content:space-between"><button class="btn small ghost" data-act="home">← Back to studying</button>
+    <div class="row">${AI?`<button class="btn small" data-act="gen-domain" ${genBusy?"disabled":""}>${genBusy?"Claude is writing…":"Have Claude write 5 for "+(E.filter.d?"D"+E.filter.d:DOMAINS[weakestDomain()].short)}</button>`:""}<button class="btn small" data-act="io">${E.ioOpen?"Close backup":"Back up / restore"}</button></div></div>
+    ${E.ioOpen?ioHTML():""}
+    <div class="ed">${left}<section class="panel">${E.draft?formHTML():`<div class="stack"><h2 style="font-size:24px;text-transform:uppercase">Pick a question to edit</h2><p style="margin:0;color:var(--ink-2)">Fix wording, change explanations, add your own memory hooks, or hide questions you never want to see again. Changes are saved in this browser and show up in your next round.</p></div>`}</section></div></div>`;
+}
+function ioHTML(){
+  return `<section class="panel io stack">
+    <div class="sectionhead"><h2>Back up / restore</h2><span class="silk">Your edits and added questions only</span></div>
+    <textarea id="ioText" data-io="1" placeholder="Paste a backup here to restore it, or press Copy to get one." aria-label="Backup JSON">${esc(E.io)}</textarea>
+    <div class="row"><button class="btn small" data-act="io-copy">Copy backup</button><button class="btn small" data-act="io-import">Restore from pasted text</button></div>
+  </section>`;
+}
+function formHTML(){
+  const q=E.draft,isBuilt=!!builtIn(q.id),edited=!!B.overrides[q.id],hidden=B.hidden.includes(q.id);
+  const opts=q.type==="mc"||q.type==="multi";
+  const correct=i=>q.type==="multi"?(Array.isArray(q.a)&&q.a.includes(i)):q.a===i;
+  return `<form class="stack" data-form="ed">
+   <div class="sectionhead"><h2 style="font-size:22px;text-transform:uppercase">${E.isNew?"New question":"Edit question"}</h2><span class="silk">${esc(q.id)}${isBuilt?" · built-in":""}</span></div>
+   <div class="grid2">
+     <div class="field"><label for="fD">Domain</label><select id="fD" data-f="d">${[1,2,3,4,5].map(d=>`<option value="${d}" ${q.d===d?"selected":""}>D${d} ${esc(DOMAINS[d].short)}</option>`).join("")}</select></div>
+     <div class="field"><label for="fT">Topic</label><input id="fT" type="text" data-f="t" value="${esc(q.t||"")}"></div>
+     <div class="field"><label for="fType">Type</label><select id="fType" data-f="type">${[["mc","One answer"],["multi","Pick several"],["order","Put in order"],["input","Type the answer"]].map(([v,l])=>`<option value="${v}" ${q.type===v?"selected":""}>${l}</option>`).join("")}</select></div>
+   </div>
+   <div class="field"><label for="fTicket">Help-desk ticket (optional, shown as a user quote)</label><textarea id="fTicket" data-f="ticket">${esc(q.ticket||"")}</textarea></div>
+   <div class="field"><label for="fQ">Question</label><textarea id="fQ" data-f="q">${esc(q.q)}</textarea></div>
+   ${opts?`<div class="field"><span class="lab">Options. Mark the right ${q.type==="multi"?"ones":"one"}, and say why each wrong one is wrong. That text is what you see when you pick it.</span>
+     <div class="stack" style="gap:8px">${q.o.map((o,i)=>`<div class="optrow">
+       <label class="pick"><input type="${q.type==="multi"?"checkbox":"radio"}" name="fA" id="fA${i}" data-a="${i}" ${correct(i)?"checked":""}> Right</label>
+       <div class="cols"><input type="text" id="fO${i}" data-o="${i}" value="${esc(o)}" placeholder="Option ${LETTERS[i]}" aria-label="Option ${LETTERS[i]}">
+       <textarea id="fW${i}" data-w="${i}" placeholder="${correct(i)?(q.type==="multi"?"Why it belongs (shown if someone misses it)":"Correct answer: no wrong-pick text needed"):"Why this is wrong"}" aria-label="Why option ${LETTERS[i]} is wrong">${esc((q.w||{})[i]||"")}</textarea></div>
+       <button type="button" class="btn small ghost" data-act="ed-delopt" data-i="${i}" ${q.o.length<=2?"disabled":""} aria-label="Remove option ${LETTERS[i]}">✕</button></div>`).join("")}</div>
+     ${q.o.length<6?`<div><button type="button" class="btn small" data-act="ed-addopt">Add option</button></div>`:""}</div>`:""}
+   ${q.type==="order"?`<div class="field"><label for="fOrd">Steps in the correct order, one per line (shuffled when you study)</label><textarea id="fOrd" data-f="orderText" style="min-height:140px">${esc((q.o||[]).join("\n"))}</textarea></div>`:""}
+   ${q.type==="input"?`<div class="field"><label for="fAns">Accepted answers, separated by commas</label><input id="fAns" type="text" data-f="ansText" value="${esc((q.ans||[]).join(", "))}"></div>`:""}
+   <div class="field"><label for="fX">Why the right answer is right</label><textarea id="fX" data-f="x">${esc(q.x||"")}</textarea></div>
+   <div class="field"><label for="fH">Memory hook</label><input id="fH" type="text" data-f="h" value="${esc(q.h||"")}"></div>
+   <div class="row" style="justify-content:space-between">
+     <div class="row"><button class="btn primary">Save</button><button type="button" class="btn" data-act="ed-try">Save and practice it</button></div>
+     <div class="row">
+       ${isBuilt&&edited?`<button type="button" class="btn small ghost" data-act="ed-revert">Restore original</button>`:""}
+       ${!E.isNew?`<button type="button" class="btn small ${hidden?"":"ghost"}" data-act="ed-hide">${hidden?"Unhide":"Hide from rounds"}</button>`:""}
+       ${!isBuilt&&!E.isNew?`<button type="button" class="btn small danger" data-act="ed-del">${E.delArmed?"Click again to delete":"Delete"}</button>`:""}
+     </div>
+   </div>
+  </form>`;
+}
+function readDraftValidation(){
+  const q=E.draft;
+  if(!q.q.trim())return "Add the question text.";
+  if(q.type==="mc"||q.type==="multi"){
+    q.o=q.o.map(s=>s.trim());
+    if(q.o.some(s=>!s))return "Every option needs text, or remove the empty ones.";
+    if(q.type==="multi"&&(!Array.isArray(q.a)||!q.a.length))return "Mark at least one right answer.";
+    if(q.type==="mc"&&!(Number.isInteger(q.a)&&q.a<q.o.length))return "Mark the right answer.";
+  }
+  if(q.type==="order"&&(q.o||[]).length<2)return "Add at least two steps.";
+  if(q.type==="input"&&!(q.ans||[]).length)return "Add at least one accepted answer.";
+  return "";
+}
+function saveDraft(){
+  const err=readDraftValidation();if(err){toast(err);return false}
+  const q=clone(E.draft);
+  if(q.type!=="mc"&&q.type!=="multi")q.w={};
+  if(builtIn(q.id))B.overrides[q.id]=q;else{q.mine=!q.ai;B.added[q.id]=q}
+  E.isNew=false;save("bank");toast("Saved. It'll show up in your next round.");return true;
+}
+function onEdInput(t){
+  const q=E.draft;if(!q)return;
+  if(t.dataset.f){
+    const f=t.dataset.f,v=t.value;
+    if(f==="d")q.d=+v;
+    else if(f==="type"){
+      q.type=v;
+      if(v==="mc"){if(!q.o||q.o.length<2)q.o=["","","",""];q.a=Array.isArray(q.a)?(q.a[0]||0):(q.a||0)}
+      if(v==="multi"){if(!q.o||q.o.length<2)q.o=["","","",""];q.a=Array.isArray(q.a)?q.a:[q.a||0]}
+      if(v==="order"){q.a=undefined}
+      if(v==="input"){q.ans=q.ans||[]}
+      render();return;
+    }
+    else if(f==="orderText")q.o=v.split("\n").map(s=>s.trim()).filter(Boolean);
+    else if(f==="ansText")q.ans=v.split(",").map(s=>s.trim()).filter(Boolean);
+    else q[f]=v;
+  }else if(t.dataset.o!=null)q.o[+t.dataset.o]=t.value;
+  else if(t.dataset.w!=null){q.w=q.w||{};const i=t.dataset.w;if(t.value.trim())q.w[i]=t.value;else delete q.w[i]}
+  else if(t.dataset.a!=null){
+    const i=+t.dataset.a;
+    if(q.type==="multi"){q.a=Array.isArray(q.a)?q.a:[];if(t.checked){if(!q.a.includes(i))q.a.push(i)}else q.a=q.a.filter(x=>x!==i);q.a.sort()}
+    else q.a=i;
+  }
+}
+
+/* ───────── events ───────── */
+document.addEventListener("click",e=>{
+  const el=e.target.closest("[data-act]");if(!el)return;
+  const act=el.dataset.act;
+  if(act!=="reset-progress"&&resetArmed){resetArmed=false}
+  switch(act){
+    case "home":clearTimeout(lightT);view="home";R=null;render();break;
+    case "sprint":startRound("sprint");break;
+    case "again":startRound(R&&R.mode==="weak"?"weak":"sprint",{domain:R?R.domain:0});break;
+    case "domain":startRound("sprint",{domain:+el.dataset.d});break;
+    case "weak":startRound("weak");break;
+    case "lightning":startRound("lightning");break;
+    case "drill-missed":{const ids=[...new Set(R.results.filter(r=>!r.ok).map(r=>r.id))];startRound("list",{list:ids});break}
+    case "end":if(R&&R.results.length)finish();else{clearTimeout(lightT);view="home";R=null;render()}break;
+    case "pick":onPick(+el.dataset.i);break;
+    case "check":if(R&&R.cur&&!R.cur.answered&&(R.cur.picked.length||R.cur.q.type==="input"))grade();break;
+    case "clear":R.cur.picked=[];render();break;
+    case "guess":R.cur.guess=!R.cur.guess;el.setAttribute("aria-pressed",R.cur.guess);break;
+    case "next":next();break;
+    case "ai-explain":askClaude();break;
+    case "ai-stop":if(R&&R.cur&&R.cur.ai&&R.cur.ai.ac)R.cur.ai.ac.abort();break;
+    case "edit-this":{const id=R.cur.q.id;if(id.startsWith("g:")){toast("Rapid-fire questions come from the fact tables and can't be edited here.");break}view="editor";editorInit(id);render();break}
+    case "editor":view="editor";editorInit();render();break;
+    case "gen-weakest":generateQuestions(weakestDomain());break;
+    case "gen-domain":generateQuestions(E.filter.d||weakestDomain());break;
+    case "reset-progress":
+      if(!resetArmed){resetArmed=true;render();break}
+      resetArmed=false;const keep=S.settings;S=defState();S.settings=keep;save("state");render();toast("Progress erased. Your question edits are kept.");break;
+    case "ed-sel":selectQ(el.dataset.id);render();break;
+    case "ed-new":newQ();render();setTimeout(()=>{const f=$("#fQ");if(f)f.focus()},0);break;
+    case "ed-addopt":E.draft.o.push("");render();break;
+    case "ed-delopt":{const i=+el.dataset.i,q=E.draft;q.o.splice(i,1);const w={};Object.entries(q.w||{}).forEach(([k,v])=>{k=+k;if(k<i)w[k]=v;else if(k>i)w[k-1]=v});q.w=w;
+      if(q.type==="multi")q.a=(q.a||[]).filter(x=>x!==i).map(x=>x>i?x-1:x);else if(q.a===i)q.a=0;else if(q.a>i)q.a--;render();break}
+    case "ed-try":{const orig=resolve(E.draft.id);const same=orig&&JSON.stringify(orig)===JSON.stringify(E.draft);if(same||saveDraft())startRound("list",{list:[E.draft.id]});break}
+    case "ed-revert":delete B.overrides[E.draft.id];save("bank");selectQ(E.draft.id);render();toast("Restored the original.");break;
+    case "ed-hide":{const id=E.draft.id;if(B.hidden.includes(id))B.hidden=B.hidden.filter(x=>x!==id);else B.hidden.push(id);save("bank");render();break}
+    case "ed-del":if(!E.delArmed){E.delArmed=true;render();break}delete B.added[E.draft.id];B.hidden=B.hidden.filter(x=>x!==E.draft.id);save("bank");E.sel=null;E.draft=null;render();toast("Deleted.");break;
+    case "io":E.ioOpen=!E.ioOpen;render();break;
+    case "io-copy":{const txt=JSON.stringify({core1bench:1,overrides:B.overrides,added:B.added,hidden:B.hidden},null,1);E.io=txt;const ta=$("#ioText");if(ta)ta.value=txt;
+      try{navigator.clipboard.writeText(txt).then(()=>toast("Backup copied."),()=>{if(ta){ta.focus();ta.select()}toast("Couldn't copy automatically. The backup is selected; copy it yourself.")})}catch(err){if(ta){ta.focus();ta.select()}}break}
+    case "io-import":{let d;try{d=JSON.parse(($("#ioText")||{}).value||"")}catch(err){toast("That doesn't look like a backup. Paste the full text you copied.");break}
+      if(!d||typeof d!=="object"||!(d.overrides||d.added||d.hidden)){toast("That doesn't look like a Core 1 Bench backup.");break}
+      Object.assign(B.overrides,d.overrides||{});Object.assign(B.added,d.added||{});B.hidden=[...new Set([...B.hidden,...(d.hidden||[])])];save("bank");E.io="";render();toast("Restored. Existing questions with the same id were replaced.");break}
+  }
+});
+document.addEventListener("submit",e=>{
+  const f=e.target.dataset.form;if(!f)return;e.preventDefault();
+  if(f==="typein"){const i=$("#typein");if(R&&R.cur&&!R.cur.answered){R.cur.input=i.value;if(i.value.trim())grade()}}
+  else if(f==="ai-follow"){const i=$("#aiFollow");askClaude(i.value)}
+  else if(f==="ed"){saveDraft();render()}
+});
+document.addEventListener("input",e=>{
+  const t=e.target;
+  if(t.id==="typein"&&R&&R.cur)R.cur.input=t.value;
+  else if(t.dataset.filter==="text"){E.filter.text=t.value;const l=$("#edList");const pos=t.selectionStart;render();const s=$("#edSearch");if(s){s.focus();s.setSelectionRange(pos,pos)}}
+  else if(t.dataset.io)E.io=t.value;
+  else if(view==="editor"&&t.closest("[data-form=ed]")&&t.type!=="radio"&&t.type!=="checkbox"&&t.tagName!=="SELECT")onEdInput(t);
+});
+document.addEventListener("change",e=>{
+  const t=e.target;
+  if(t.dataset.set){const k=t.dataset.set;S.settings[k]=k==="autoNext"?t.value==="1":+t.value;save("state");render()}
+  else if(t.dataset.filter&&t.dataset.filter!=="text"){E.filter[t.dataset.filter]=t.dataset.filter==="d"?+t.value:t.value;render()}
+  else if(view==="editor"&&t.closest("[data-form=ed]")&&(t.type==="radio"||t.type==="checkbox"||t.tagName==="SELECT"))onEdInput(t);
+});
+function onPick(i){
+  const c=R&&R.cur;if(!c||c.answered)return;const q=c.q;
+  if(q.type==="mc"){c.picked=[i];grade();return}
+  if(q.type==="multi"){c.picked=c.picked.includes(i)?c.picked.filter(x=>x!==i):[...c.picked,i];render();return}
+  if(q.type==="order"){c.picked=c.picked.includes(i)?c.picked.filter(x=>x!==i):[...c.picked,i];render();return}
+}
+document.addEventListener("keydown",e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  const tag=(e.target.tagName||"").toLowerCase(),typing=tag==="input"||tag==="textarea"||tag==="select";
+  if(typing)return;
+  const onButton=tag==="button";
+  if(view==="home"&&e.key==="Enter"&&!onButton){e.preventDefault();startRound("sprint");return}
+  if(view==="summary"&&e.key==="Enter"&&!onButton){e.preventDefault();if(R.mode==="lightning")startRound("lightning");else startRound(R.mode==="weak"?"weak":"sprint",{domain:R.domain});return}
+  if(view!=="quiz"||!R||!R.cur)return;
+  const c=R.cur;
+  if(!c.answered){
+    const k=e.key.toLowerCase();let idx=-1;
+    if(/^[1-8]$/.test(k))idx=+k-1;else if(/^[a-h]$/.test(k)&&k!=="g"&&k!=="e")idx=LETTERS.toLowerCase().indexOf(k);
+    if(idx>=0&&c.order&&idx<c.order.length){e.preventDefault();onPick(c.order[idx]);return}
+    if(k==="g"&&R.mode!=="lightning"){c.guess=!c.guess;const g=$(".guess");if(g)g.setAttribute("aria-pressed",c.guess);return}
+    if(e.key==="Enter"&&!onButton&&(c.q.type==="multi"||c.q.type==="order")&&c.picked.length){e.preventDefault();grade()}
+  }else if(R.mode!=="lightning"){
+    if((e.key==="Enter"||e.key==="ArrowRight")&&!onButton){e.preventDefault();next()}
+    else if(e.key.toLowerCase()==="e"&&AI&&!(c.ai&&c.ai.busy)){e.preventDefault();askClaude()}
+  }
+});
+
+/* ───────── boot ───────── */
+render();
+connect();
+connectAI();
+})();
+</script>
+</body>
+</html>
