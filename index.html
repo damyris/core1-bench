@@ -886,7 +886,7 @@ function homeHTML(){
   const ln=(k,v)=>`<span class="ln"><span class="k">${k}</span> ${v}</span>`;
   const anim=!bootDone;bootDone=true;
   return `<div class="stack">
-  <div class="crumb"><button class="btn small ghost" data-act="pick">&lt; ALL COURSES</button>${COURSE.id==="linux"?`<span class="mascot" aria-hidden="true">${PENGUIN}</span>`:""}<span class="silk">${esc(COURSE.name)} · ${esc(COURSE.code)}</span></div>
+  <div class="crumb"><button class="btn small ghost" data-act="courses">&lt; ALL COURSES</button>${COURSE.id==="linux"?`<span class="mascot" aria-hidden="true">${PENGUIN}</span>`:""}<span class="silk">${esc(COURSE.name)} · ${esc(COURSE.code)}</span></div>
   <pre class="boot ${anim?"anim":""}" aria-label="System status">${[
     ln("BIOS "+COURSE.bios+" .","<span class=\"ok-t\">READY</span>"),
     ln("BANK ........",allQuestions().length+" LOADED"),
@@ -1193,7 +1193,7 @@ document.addEventListener("click",e=>{
   switch(act){
     case "snd":S.settings.sound=!S.settings.sound;save("state");updateBar();SFX.play("ok");if(view==="home")render();break;
     case "home":clearTimeout(lightT);view=view==="home"?"pick":"home";R=null;render();break;
-    case "pick":view="pick";render();break;
+    case "courses":view="pick";render();break;
     case "sprint":startRound("sprint");break;
     case "again":startRound(R&&R.mode==="weak"?"weak":"sprint",{domain:R?R.domain:0,topic:R?R.topic:""});break;
     case "domain":startRound("sprint",{domain:+el.dataset.d});break;
