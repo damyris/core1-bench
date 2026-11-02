@@ -321,6 +321,10 @@ const DOMAINS={
   4:{name:"Virtualization & Cloud",short:"Virt & Cloud",w:11},
   5:{name:"Hardware & Network Troubleshooting",short:"Troubleshooting",w:28}
 };
+/* Topic tracks cut across domains. Questions keep their real domain so exam weighting stays honest. */
+const TOPICS={
+  printers:{name:"Printers & MFDs",short:"Printers",ref:"PR",note:"Spread across D3 + D5",match:q=>/print/i.test(q.t||"")}
+};
 const MIN=60e3, DAY=864e5;
 const INTERVAL=[0,10*MIN,DAY,3*DAY,7*DAY,21*DAY];
 const LETTERS="ABCDEFGH";
@@ -501,18 +505,26 @@ const G={
   cable(key){const c=(FACTS.cables||[]).find(x=>x.c===key);if(!c)return null;
     const all=[...FACTS.cables.map(x=>x.c),"Cat 5"];const others=all.filter(x=>x!==c.c);const w={};
     others.forEach((x,i)=>{const f=FACTS.cables.find(y=>y.c===x);w[i+1]=f?`${x} does ${f.s}.`:"Cat 5 (no 'e') is legacy 100 Mbps."});
-    return {id:"g:cable:"+key,d:2,t:"Cabling",type:"mc",gen:true,q:`Which cable category is rated for ${c.s}?`,o:[c.c,...others],a:0,w,x:`${c.c} is rated for ${c.s}. Copper Ethernet runs max out at ${c.r}.`,h:"5e = 1 Gig. 6 = 10 Gig short runs. 6a = 10 Gig the full 100 m."}}
+    return {id:"g:cable:"+key,d:2,t:"Cabling",type:"mc",gen:true,q:`Which cable category is rated for ${c.s}?`,o:[c.c,...others],a:0,w,x:`${c.c} is rated for ${c.s}. Copper Ethernet runs max out at ${c.r}.`,h:"5e = 1 Gig. 6 = 10 Gig short runs. 6a = 10 Gig the full 100 m."}},
+  prn(key){const all=FACTS.printerParts||[];const f=all.find(x=>x.k===key);if(!f)return null;
+    const kind=x=>x.s.split(":")[0],rest=all.filter(x=>x!==f);
+    const others=[...shuffle(rest.filter(x=>kind(x)===kind(f))),...shuffle(rest.filter(x=>kind(x)!==kind(f)))].slice(0,3);const w={};
+    others.forEach((x,i)=>w[i+1]=`${x.p} trouble looks different. ${x.s}.`);
+    return {id:"g:prn:"+key,d:5,t:"Printers",type:"mc",gen:true,q:`${f.s}. Which part is the likely culprit?`,o:[f,...others].map(x=>x.p),a:0,w,x:`That symptom points to the ${f.p.toLowerCase()}.`,h:`${f.s.replace(/^[^:]+: /,"")} → ${f.p}`}}
 };
 const GEN_KEYS={
   port:()=>(FACTS.ports||[]).map(x=>x.p), portIn:()=>(FACTS.ports||[]).map(x=>x.p),
   raid:()=>(FACTS.raid||[]).map(x=>x.l), raidMin:()=>(FACTS.raid||[]).map(x=>x.l),
   wifi:()=>(FACTS.wifi||[]).map(x=>x.s), wifiGen:()=>(FACTS.wifi||[]).filter(x=>x.g).map(x=>x.g),
-  ram:()=>(FACTS.ram||[]).map(x=>x.k), usb:()=>(FACTS.usb||[]).map(x=>x.v), cable:()=>(FACTS.cables||[]).map(x=>x.c)
+  ram:()=>(FACTS.ram||[]).map(x=>x.k), usb:()=>(FACTS.usb||[]).map(x=>x.v), cable:()=>(FACTS.cables||[]).map(x=>x.c),
+  prn:()=>(FACTS.printerParts||[]).map(x=>x.k)
 };
-const GEN_DOMAIN={port:2,portIn:2,wifi:2,wifiGen:2,cable:2,raid:3,raidMin:3,ram:3,usb:3};
+const GEN_DOMAIN={port:2,portIn:2,wifi:2,wifiGen:2,cable:2,raid:3,raidMin:3,ram:3,usb:3,prn:5};
+const GEN_TOPIC={prn:"printers"};
 function genFromId(id){const [,kind,...rest]=id.split(":");const key=rest.join(":");return G[kind]?G[kind](key):null}
-function randomGen(domain){
-  const kinds=Object.keys(G).filter(k=>!domain||GEN_DOMAIN[k]===domain);
+const genKinds=(domain,topic)=>Object.keys(G).filter(k=>(!domain||GEN_DOMAIN[k]===domain)&&(!topic||GEN_TOPIC[k]===topic)&&GEN_KEYS[k]().length);
+function randomGen(domain,topic){
+  const kinds=genKinds(domain,topic);
   if(!kinds.length)return null;
   const k=kinds[Math.floor(Math.random()*kinds.length)];const keys=GEN_KEYS[k]();
   return G[k](keys[Math.floor(Math.random()*keys.length)]);
@@ -533,14 +545,14 @@ function weighted(items,n){
   }
   return out;
 }
-function buildSprint(n,domain){
+function buildSprint(n,domain,topic){
   const now=Date.now(),recent=new Set(S.recent);
-  const pool=allQuestions().filter(q=>!domain||q.d===domain);
-  const genCount=(!domain||domain===2||domain===3)?Math.max(1,Math.round(n*0.2)):0;
-  const scored=pool.map(q=>({q,w:weightFor(q.id,now)*(domain?1:DOMAINS[q.d].w/20)*(recent.has(q.id)?0.12:1)}));
+  const pool=allQuestions().filter(q=>(!domain||q.d===domain)&&(!topic||TOPICS[topic].match(q)));
+  const genCount=genKinds(domain,topic).length?Math.max(1,Math.round(n*0.2)):0;
+  const scored=pool.map(q=>({q,w:weightFor(q.id,now)*(domain||topic?1:DOMAINS[q.d].w/20)*(recent.has(q.id)?0.12:1)}));
   const picks=weighted(scored,n-genCount);
   for(let i=0;i<genCount;i++){
-    let g=null;for(let t=0;t<8&&(!g||recent.has(g.id)||picks.some(p=>p.id===g.id||(p.gen&&p.t===g.t)));t++)g=randomGen(domain);
+    let g=null;for(let t=0;t<8&&(!g||recent.has(g.id)||picks.some(p=>p.id===g.id||(p.gen&&p.t===g.t)));t++)g=randomGen(domain,topic);
     if(g)picks.splice(Math.floor(Math.random()*(picks.length+1)),0,g);
   }
   return picks;
@@ -557,8 +569,10 @@ function streak(){
   return n;
 }
 const level=()=>Math.floor(Math.sqrt(S.xp/60))+1;
-function mastery(d){
-  const qs=allQuestions().filter(q=>q.d===d);if(!qs.length)return {pct:0,seen:0,total:0,acc:null};
+const mastery=d=>masteryOf(allQuestions().filter(q=>q.d===d));
+const topicMastery=t=>masteryOf(allQuestions().filter(TOPICS[t].match));
+function masteryOf(qs){
+  if(!qs.length)return {pct:0,seen:0,total:0,acc:null};
   let m=0,seen=0,c=0,a=0;
   for(const q of qs){const st=S.stats[q.id];if(st&&st.s){seen++;m+=Math.min(st.b||0,4)/4;c+=st.c;a+=st.s}}
   return {pct:Math.round(100*m/qs.length),seen,total:qs.length,acc:a?Math.round(100*c/a):null};
@@ -575,12 +589,12 @@ let view="home", R=null, E=null;
 function startRound(mode,opts={}){
   const n=S.settings.roundLen;
   let qs=[];
-  if(mode==="sprint")qs=buildSprint(n,opts.domain||0);
+  if(mode==="sprint")qs=buildSprint(n,opts.domain||0,opts.topic||"");
   else if(mode==="weak"){qs=weakIds().slice(0,n).map(resolve).filter(Boolean);if(!qs.length){toast("No weak spots right now. Run a sprint to find some.");return}}
   else if(mode==="list")qs=opts.list.map(x=>typeof x==="string"?resolve(x):x).filter(Boolean);
   else if(mode==="lightning")qs=[randomGen()];
   if(!qs.length){toast("No questions match that yet.");return}
-  R={mode,domain:opts.domain||0,queue:qs.map(q=>({q,comeback:false})),i:0,results:[],combo:0,maxCombo:0,xp:0,
+  R={mode,domain:opts.domain||0,topic:opts.topic||"",queue:qs.map(q=>({q,comeback:false})),i:0,results:[],combo:0,maxCombo:0,xp:0,
      timeLeft:60000,lastTick:0,flash:null,cur:null,label:opts.label||""};
   view="quiz";loadCur();render();
   if(mode==="lightning")tickLightning();
@@ -800,7 +814,7 @@ function homeHTML(){
   <p class="sub">${esc(hello)}</p>
   <div class="cmds">
     <button class="cmd" data-act="weak"><kbd>W</kbd><b>Weak spots</b><span>${weak?weak+" missed, drill them till they stick":"Nothing missed yet"}</span></button>
-    <button class="cmd" data-act="lightning"><kbd>L</kbd><b>Lightning 60s</b><span>Ports, RAID, Wi-Fi, RAM · best ${S.lightningBest}</span></button>
+    <button class="cmd" data-act="lightning"><kbd>L</kbd><b>Lightning 60s</b><span>Ports, RAID, Wi-Fi, printers · best ${S.lightningBest}</span></button>
   </div>
 
   <details class="drawer" data-drawer="domains" ${UI.open.domains?"open":""}><summary>Domains</summary><div class="drawer-body">
@@ -808,6 +822,12 @@ function homeHTML(){
       <button class="dom" data-act="domain" data-d="${d}">
         <span class="ref">D${d}</span>
         <span class="nm">${esc(DOMAINS[d].name)}<small>${DOMAINS[d].w}% of exam · ${m.seen}/${m.total} seen${m.acc!=null?" · "+m.acc+"% right":""}</small></span>
+        <span class="meter" title="Mastery"><i style="width:${m.pct}%"></i></span>
+        <span class="pct tabnum">${m.pct}%</span>
+      </button>`}).join("")}${Object.entries(TOPICS).map(([k,t])=>{const m=topicMastery(k);return `
+      <button class="dom" data-act="topic" data-t="${k}">
+        <span class="ref">${t.ref}</span>
+        <span class="nm">${esc(t.name)}<small>${esc(t.note)} · ${m.seen}/${m.total} seen${m.acc!=null?" · "+m.acc+"% right":""}</small></span>
         <span class="meter" title="Mastery"><i style="width:${m.pct}%"></i></span>
         <span class="pct tabnum">${m.pct}%</span>
       </button>`}).join("")}</div>
@@ -1090,8 +1110,9 @@ document.addEventListener("click",e=>{
     case "snd":S.settings.sound=!S.settings.sound;save("state");updateBar();SFX.play("ok");if(view==="home")render();break;
     case "home":clearTimeout(lightT);view="home";R=null;render();break;
     case "sprint":startRound("sprint");break;
-    case "again":startRound(R&&R.mode==="weak"?"weak":"sprint",{domain:R?R.domain:0});break;
+    case "again":startRound(R&&R.mode==="weak"?"weak":"sprint",{domain:R?R.domain:0,topic:R?R.topic:""});break;
     case "domain":startRound("sprint",{domain:+el.dataset.d});break;
+    case "topic":startRound("sprint",{topic:el.dataset.t});break;
     case "weak":startRound("weak");break;
     case "lightning":startRound("lightning");break;
     case "drill-missed":{const ids=[...new Set(R.results.filter(r=>!r.ok).map(r=>r.id))];startRound("list",{list:ids});break}
@@ -1163,7 +1184,7 @@ document.addEventListener("keydown",e=>{
   if(view==="home"&&e.key.toLowerCase()==="l"){startRound("lightning");return}
   if(view==="quiz"&&e.key==="Escape"&&R){if(R.results.length)finish();else{clearTimeout(lightT);view="home";R=null;render()}return}
   if(view==="home"&&e.key==="Enter"&&!onButton){e.preventDefault();startRound("sprint");return}
-  if(view==="summary"&&e.key==="Enter"&&!onButton){e.preventDefault();if(R.mode==="lightning")startRound("lightning");else startRound(R.mode==="weak"?"weak":"sprint",{domain:R.domain});return}
+  if(view==="summary"&&e.key==="Enter"&&!onButton){e.preventDefault();if(R.mode==="lightning")startRound("lightning");else startRound(R.mode==="weak"?"weak":"sprint",{domain:R.domain,topic:R.topic});return}
   if(view!=="quiz"||!R||!R.cur)return;
   const c=R.cur;
   if(!c.answered){
