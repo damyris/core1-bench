@@ -15,7 +15,7 @@ img{max-width:100%}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=VT323&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=VT323&family=JetBrains+Mono:wght@400;700&display=swap">
 <style>
 /* Layout: one terminal "window" column on a CRT. Phosphor color is a setting (amber / green / ice); scanlines + glow are a setting too. */
 :root{
@@ -28,13 +28,26 @@ img{max-width:100%}
 }
 body.ph-green{--bg:#06100A; --bg2:#0B1A10; --bg3:#112417; --fg:#4CFF86; --dim:#3BC46A; --faint:#1F6B3A; --line:#173A22; --hi:#D2FFE0; --ok:#F2FFF6; --bad:#FF6B5A; --glow:rgba(76,255,134,.4)}
 body.ph-ice{--bg:#070B10; --bg2:#0E141C; --bg3:#151D28; --fg:#CFE8FF; --dim:#93AEC8; --faint:#46596D; --line:#223042; --hi:#FFFFFF; --ok:#7DF7A8; --bad:#FF7A6B; --glow:rgba(180,220,255,.35)}
+/* Themes beyond the phosphors: --acc is the highlight color (defaults to --fg, so amber/green/ice look unchanged). */
+body{--acc:var(--fg); --on-acc:var(--bg); --scan:.22; --wall:var(--bg)}
+body.ph-rice{--bg:#1D1916; --bg2:#241F1B; --bg3:#2C2622; --fg:#E8DCC8; --dim:#A8998A; --faint:#7D7063; --line:#3A322C; --hi:#F5ECDD; --ok:#A9B665; --bad:#EA6962; --glow:rgba(217,130,91,.16); --acc:#D9825B; --on-acc:#1D1916; --scan:.07;
+  --wall:radial-gradient(rgba(232,220,200,.06) 1px,transparent 1.6px) 0 0/22px 22px fixed,radial-gradient(60% 50% at 18% 8%,rgba(217,130,91,.24),transparent 70%) fixed,radial-gradient(50% 50% at 88% 92%,rgba(127,162,184,.18),transparent 70%) fixed,linear-gradient(160deg,#2A3138 0%,#3E3A38 35%,#3A2C23 65%,#1D1916 100%) fixed,#1D1916}
+body.ph-shell{--bg:#0F0F0F; --bg2:#161616; --bg3:#1E1E1E; --fg:#D9D5CB; --dim:#8C887F; --faint:#64615A; --line:#2B2B2B; --hi:#F4F1EA; --ok:#4ADE80; --bad:#F87171; --glow:rgba(242,169,59,.12); --acc:#F2A93B; --on-acc:#111111; --scan:.12}
+body.ph-dusk{--bg:#0E0B08; --bg2:#18130D; --bg3:#211A12; --fg:#EDE5D2; --dim:#A39A88; --faint:#776E60; --line:#2E271F; --hi:#F8F2E2; --ok:#2BB3AA; --bad:#F2705E; --glow:rgba(245,165,36,.14); --acc:#F5A524; --on-acc:#1A1206; --scan:.06;
+  --wall:radial-gradient(70% 55% at 12% 8%,rgba(245,165,36,.24),transparent 70%) fixed,radial-gradient(55% 55% at 92% 96%,rgba(43,179,170,.2),transparent 70%) fixed,linear-gradient(rgba(237,229,210,.04) 1px,transparent 1px) 0 0/56px 56px fixed,linear-gradient(90deg,rgba(237,229,210,.04) 1px,transparent 1px) 0 0/56px 56px fixed,#0E0B08}
+body.ph-paper{color-scheme:light; --bg:#F3ECDC; --bg2:#FBF6EA; --bg3:#EFE5D0; --fg:#3A2E22; --dim:#6E5E48; --faint:#8A7860; --line:#D9CCB2; --hi:#16100A; --ok:#2E7D32; --bad:#C0392B; --glow:transparent; --acc:#B5540F; --on-acc:#FFF8EC; --scan:.05}
+body:is(.ph-rice,.ph-shell,.ph-dusk){
+  --display:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --body:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
 
 *{box-sizing:border-box}
 html{background:var(--bg)}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55;min-height:100vh}
 body.crt{text-shadow:0 0 5px var(--glow)}
 body.crt::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:30;
-  background:repeating-linear-gradient(to bottom,rgba(0,0,0,.22) 0,rgba(0,0,0,.22) 1px,transparent 1px,transparent 3px)}
+  background:repeating-linear-gradient(to bottom,rgba(0,0,0,var(--scan)) 0,rgba(0,0,0,var(--scan)) 1px,transparent 1px,transparent 3px)}
 body.crt::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:31;
   background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55) 100%)}
 body.crt.boot #wrap{animation:poweron .5s ease-out}
@@ -138,7 +151,7 @@ details.drawer>summary:hover{color:var(--fg)}
 .card .enter{font-size:12px;letter-spacing:.1em}
 .ico{font-family:var(--display);font-size:40px;line-height:1;display:inline-block}
 .mascot{display:inline-block;color:var(--fg);animation:waddle 1.8s ease-in-out infinite;transform-origin:50% 100%}
-.mascot svg{display:block}.crumb .mascot svg{width:34px;height:38px}
+.mascot img{display:block;filter:drop-shadow(0 0 1.5px var(--dim))}.crumb .mascot img{width:32px;height:38px}
 .byline{margin:4px 0 0;color:var(--dim);font-size:14px;text-align:center}.byline b{color:var(--fg);animation:glowpulse 2s ease-in-out infinite alternate}
 @keyframes bouncein{0%{opacity:0;transform:translateY(30px) scale(.85)}100%{opacity:1;transform:none}}
 @keyframes hop{to{transform:translateY(-8px)}}
@@ -299,6 +312,67 @@ input[type=radio],input[type=checkbox]{accent-color:var(--fg)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);text-shadow:none;padding:10px 16px;font-weight:600;z-index:45;max-width:calc(100% - 32px);font-size:14px}
 .toast::before{content:"> "}
 
+/* ── theme accents: same as --fg on amber/green/ice, a separate highlight color elsewhere ── */
+body{background:var(--wall)}
+.btn.primary{background:var(--acc);border-color:var(--acc);color:var(--on-acc)}
+.combo.hot,.chip.hot,.guess[aria-pressed="true"],.li.on,.course[aria-pressed="true"],.toast{background:var(--acc);border-color:var(--acc);color:var(--on-acc)}
+.course[aria-pressed="true"] span{color:var(--on-acc)}
+.opt.sel{border-color:var(--acc)}
+.opt.sel .k{background:var(--acc);border-color:var(--acc);color:var(--on-acc)}
+.pips i.now,.led{background:var(--acc)}
+.meter i,.timer i{background:repeating-linear-gradient(90deg,var(--acc) 0 6px,transparent 6px 8px)}
+.qtext::before,details.drawer>summary::before,.hook .silk,.combo{color:var(--acc)}
+.combo,.hook{border-color:var(--acc)}
+.combo.zero{color:var(--faint);border-color:var(--line)}
+.combo.hot{color:var(--on-acc)}
+.card:hover,.card:focus-visible,.cmd:hover,.dom:hover,.course:hover{border-color:var(--acc)}
+main#view{border-color:var(--acc)}
+::selection{background:var(--acc);color:var(--on-acc)}
+.thm b{color:var(--acc);font-weight:400}
+
+/* modern-type themes: JetBrains Mono runs much larger than VT323, so display sizes come down */
+body:is(.ph-rice,.ph-shell,.ph-dusk) :is(h1,h2,h3,.brand b,.cmd b,.card b,.course b,.pick-h,.go,.combo,.bigscore,.grade,.score .n,.score .of,.tile b,.banner b,.dom .ref,.li .ref,.ico){font-weight:700;letter-spacing:-.02em}
+body:is(.ph-rice,.ph-shell,.ph-dusk) .brand b{font-size:20px}
+body:is(.ph-rice,.ph-shell,.ph-dusk) .cmd b{font-size:17px}
+body:is(.ph-rice,.ph-shell,.ph-dusk) .course b{font-size:15px}
+body:is(.ph-rice,.ph-shell,.ph-dusk) .card b{font-size:23px}
+body:is(.ph-rice,.ph-shell,.ph-dusk) .pick-h{font-size:clamp(22px,4.6vw,32px)}
+body:is(.ph-rice,.ph-shell,.ph-dusk) .sectionhead h2{font-size:20px}
+body:is(.ph-rice,.ph-shell,.ph-dusk) .fb .head h3{font-size:22px}
+body:is(.ph-rice,.ph-shell,.ph-dusk) .go{font-size:clamp(16px,3.4vw,19px)}
+body:is(.ph-rice,.ph-shell,.ph-dusk) .combo{font-size:16px;padding:4px 10px}
+body:is(.ph-rice,.ph-shell,.ph-dusk) .dom .ref{font-size:16px}
+body:is(.ph-rice,.ph-shell,.ph-dusk) .li .ref{font-size:14px}
+body:is(.ph-rice,.ph-shell,.ph-dusk) .ico{font-size:28px}
+body:is(.ph-rice,.ph-shell,.ph-dusk) .bigscore{font-size:30px}
+body:is(.ph-rice,.ph-shell,.ph-dusk) .grade{font-size:clamp(76px,15vw,112px)}
+body:is(.ph-rice,.ph-shell,.ph-dusk) .score .n{font-size:clamp(40px,8vw,58px)}
+body:is(.ph-rice,.ph-shell,.ph-dusk) .score .of{font-size:20px}
+body:is(.ph-rice,.ph-shell,.ph-dusk) .tile b{font-size:22px}
+body:is(.ph-rice,.ph-shell,.ph-dusk) .banner b{font-size:clamp(30px,7vw,50px)}
+body:is(.ph-rice,.ph-shell,.ph-dusk) .qtext{font-size:19px}
+
+/* rice: tiling-WM desktop — wallpaper, floating bar, rounded gapped windows, lowercase headings */
+body.ph-rice .bar{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;background:rgba(36,31,27,.86);backdrop-filter:blur(10px)}
+body.ph-rice main#view{border:1px solid var(--acc);border-radius:12px;background:rgba(29,25,22,.9);backdrop-filter:blur(10px);box-shadow:0 18px 40px rgba(0,0,0,.35)}
+body.ph-rice :is(h1,h2,h3,.brand b,.cmd b,.card b,.course b,.pick-h,.go){text-transform:lowercase}
+body.ph-rice :is(.btn,.opt,.cmd,.dom,.course,.guess,.chip,.ticket,.snd,.typein input,.field input,.field select,.field textarea){border-radius:8px}
+body.ph-rice :is(.panel,.card,.fb,.tile,.ai,.optrow,.flash,.hook){border-radius:12px;overflow:hidden}
+body.ph-rice :is(.pips i,.meter,.timer,.combo,kbd,.badge){border-radius:5px}
+body.ph-rice .opt .k{border-radius:6px}
+body.ph-rice .banner{border:1px solid var(--acc);border-radius:14px}
+body.ph-rice .toast{border-radius:10px}
+body.ph-rice .ticket{border-style:solid;border-color:var(--line)}
+/* dusk: warm glow + grid wallpaper behind a slightly see-through window */
+body.ph-dusk .bar{background:rgba(24,19,13,.82);backdrop-filter:blur(8px)}
+body.ph-dusk main#view{background:rgba(14,11,8,.86);backdrop-filter:blur(8px)}
+body.ph-dusk :is(.btn,.opt,.cmd,.card,.panel,.fb){border-radius:4px}
+/* shell: plain modern terminal, thin borders */
+body.ph-shell .bar,body.ph-shell main#view{border-width:1px}
+body.ph-shell .bar{border-color:var(--line)}
+/* paper: light mode, so the CRT vignette would just look dirty */
+body.ph-paper.crt::after{display:none}
+
 @media (max-width:720px){
   .ed{grid-template-columns:minmax(0,1fr)}
   .list{max-height:40vh}
@@ -332,6 +406,7 @@ input[type=radio],input[type=checkbox]{accent-color:var(--fg)}
     <div class="spacer"></div>
     <div class="stat" title="Days in a row you've studied"><span class="led" id="streakLed"></span><strong id="streakN">0</strong>D STREAK</div>
     <div class="stat" title="Experience points"><strong id="xpN">0</strong>XP · LVL <strong id="lvlN">1</strong></div>
+    <button class="snd thm" id="thmBtn" data-act="theme" title="Switch theme">THEME:<b>RICE</b></button>
     <button class="snd" id="sndBtn" data-act="snd" title="Sound on or off (M)">SND:ON</button>
   </div>
   <main id="view"></main>
@@ -441,16 +516,19 @@ function confetti(n){
     if(k<1)requestAnimationFrame(step);else{ctx.clearRect(0,0,innerWidth,innerHeight);cv.hidden=true}
   })(t0);
 }
+const THEMES=[["rice","Rice (riced terminal)"],["amber","Amber CRT"],["green","Green screen"],["ice","Ice white"],["shell","Shell (modern)"],["dusk","Dusk (glow + grid)"],["paper","Paper (light)"]];
 function applyLook(){
   const b=document.body;
-  b.classList.remove("ph-amber","ph-green","ph-ice");b.classList.add("ph-"+(S.settings.phosphor||"amber"));
+  if(!THEMES.some(t=>t[0]===S.settings.phosphor))S.settings.phosphor="rice";
+  b.classList.remove(...THEMES.map(t=>"ph-"+t[0]));b.classList.add("ph-"+S.settings.phosphor);
+  const tb=document.querySelector("#thmBtn b");if(tb)tb.textContent=S.settings.phosphor.toUpperCase();
   b.classList.toggle("crt",S.settings.crt!==false);
   const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=getComputedStyle(b).getPropertyValue("--bg").trim();
 }
 const UI={open:{}};
 
 /* ───────── state ───────── */
-const defState=()=>({v:1,stats:{},xp:0,days:{},recent:[],lightningBest:0,lbest:{},bestCombo:0,settings:{roundLen:10,goal:30,autoNext:false,sound:true,crt:true,phosphor:"amber",course:"core1"},updatedAt:0});
+const defState=()=>({v:1,stats:{},xp:0,days:{},recent:[],lightningBest:0,lbest:{},bestCombo:0,settings:{roundLen:10,goal:30,autoNext:false,sound:true,crt:true,phosphor:"rice",course:"core1"},updatedAt:0});
 const defBank=()=>({v:1,overrides:{},added:{},hidden:[],updatedAt:0});
 let S=Object.assign(defState(),LS.get("c1b.state")||{});
 let B=Object.assign(defBank(),LS.get("c1b.bank")||{});
@@ -866,7 +944,7 @@ function afterRender(){
 
 let bootDone=false;
 function asciiBar(v,max,n){const f=Math.max(0,Math.min(n,Math.round(n*v/max)));return "["+"#".repeat(f)+"-".repeat(n-f)+"]"}
-const PENGUIN=`<svg viewBox="0 0 64 72" width="56" height="63" role="img" aria-label="Penguin"><ellipse cx="32" cy="40" rx="22" ry="28" fill="#1b1b1f" stroke="currentColor" stroke-width="2"/><ellipse cx="32" cy="46" rx="14" ry="20" fill="#f4f1e6"/><circle cx="25" cy="24" r="5" fill="#fff"/><circle cx="39" cy="24" r="5" fill="#fff"/><circle cx="26" cy="25" r="2.4" fill="#111"/><circle cx="38" cy="25" r="2.4" fill="#111"/><path d="M26 31 L38 31 L32 38 Z" fill="#f2a524"/><ellipse cx="22" cy="68" rx="8" ry="3.5" fill="#f2a524"/><ellipse cx="42" cy="68" rx="8" ry="3.5" fill="#f2a524"/></svg>`;
+const PENGUIN=`<img src="data:image/webp;base64,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" width="54" height="64" alt="Tux the penguin">`;
 const ICONS={core1:`<span class="ico" aria-hidden="true">[▣]</span>`,core2:`<span class="ico" aria-hidden="true">[⚿]</span>`};
 function pickHTML(){
   return `<div class="stack pick">
@@ -920,7 +998,7 @@ function homeHTML(){
 
   <details class="drawer" data-drawer="settings" ${UI.open.settings?"open":""}><summary>Settings</summary><div class="drawer-body">
     <div class="settings">
-      <div class="field"><label for="setPh">Phosphor</label><select id="setPh" data-set="phosphor">${[["amber","Amber"],["green","Green"],["ice","Ice white"]].map(([v,l])=>`<option value="${v}" ${S.settings.phosphor===v?"selected":""}>${l}</option>`).join("")}</select></div>
+      <div class="field"><label for="setPh">Theme</label><select id="setPh" data-set="phosphor">${THEMES.map(([v,l])=>`<option value="${v}" ${S.settings.phosphor===v?"selected":""}>${l}</option>`).join("")}</select></div>
       <div class="field"><label for="setCrt">CRT effects</label><select id="setCrt" data-set="crt"><option value="1" ${S.settings.crt!==false?"selected":""}>Scanlines + glow</option><option value="0" ${S.settings.crt===false?"selected":""}>Off (crisper text)</option></select></div>
       <div class="field"><label for="setSnd">Sound</label><select id="setSnd" data-set="sound"><option value="1" ${S.settings.sound?"selected":""}>On</option><option value="0" ${S.settings.sound?"":"selected"}>Off</option></select></div>
       <div class="field"><label for="setLen">Questions per sprint</label><select id="setLen" data-set="roundLen">${[5,10,15,20].map(n=>`<option ${n===S.settings.roundLen?"selected":""}>${n}</option>`).join("")}</select></div>
@@ -1191,6 +1269,7 @@ document.addEventListener("click",e=>{
   const act=el.dataset.act;
   if(act!=="reset-progress"&&resetArmed){resetArmed=false}
   switch(act){
+    case "theme":{const i=THEMES.findIndex(t=>t[0]===S.settings.phosphor);S.settings.phosphor=THEMES[(i+1)%THEMES.length][0];save("state");applyLook();render();toast("Theme: "+THEMES[(i+1)%THEMES.length][1]);break}
     case "snd":S.settings.sound=!S.settings.sound;save("state");updateBar();SFX.play("ok");if(view==="home")render();break;
     case "home":clearTimeout(lightT);view=view==="home"?"pick":"home";R=null;render();break;
     case "courses":view="pick";render();break;
