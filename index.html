@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0C0905">
-<title>Core 1 Bench</title>
-<meta name="description" content="Quick, ADHD-friendly practice for the CompTIA A+ Core 1 (220-1201) exam. Short sprints, instant feedback, and explanations of why your pick was wrong.">
+<title>Cert Bench</title>
+<meta name="description" content="Quick, ADHD-friendly practice for CompTIA A+ Core 1, A+ Core 2, and Linux+. Short sprints, instant feedback, and explanations of why your pick was wrong.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230C0905'/%3E%3Ctext x='4' y='22' font-family='monospace' font-weight='700' font-size='16' fill='%23FFB547'%3E%3E_%3C/text%3E%3C/svg%3E">
 <style>
 :root{color-scheme:dark;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -108,6 +108,13 @@ details.drawer>summary::before{content:"[+]";color:var(--fg)}
 details.drawer[open]>summary::before{content:"[-]"}
 details.drawer>summary:hover{color:var(--fg)}
 .drawer-body{padding-top:12px;display:flex;flex-direction:column;gap:14px}
+.courses{display:flex;gap:6px;flex-wrap:wrap}
+.course{flex:1 1 0;min-width:0;border:1px solid var(--line);background:var(--bg2);padding:8px 10px;text-align:left;display:flex;flex-direction:column;gap:2px}
+.course b{font-family:var(--display);font-weight:400;font-size:22px;line-height:1;text-transform:uppercase;white-space:nowrap}
+.course span{font-size:12px;color:var(--dim)}
+.course:hover{border-color:var(--fg)}
+.course[aria-pressed="true"]{border-color:var(--fg);background:var(--fg);color:var(--bg)}
+.course[aria-pressed="true"] span{color:var(--bg)}
 .domains{display:flex;flex-direction:column;gap:2px}
 .dom{display:grid;grid-template-columns:40px minmax(0,1fr) 150px 48px;gap:12px;align-items:center;padding:8px;background:none;border:1px solid transparent;text-align:left;width:100%}
 .dom:hover{border-color:var(--fg);background:var(--bg3)}
@@ -120,6 +127,30 @@ details.drawer>summary:hover{color:var(--fg)}
 .sectionhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap}
 .sectionhead h2{font-size:30px}
 .foot{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;color:var(--dim);font-size:12px}
+.crumb{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pick-h{font-family:var(--display);font-weight:400;font-size:clamp(30px,6vw,46px);margin:0;line-height:1;text-transform:uppercase;animation:wobble 2.6s ease-in-out infinite}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.card{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;border:2px solid var(--line);background:var(--bg2);padding:18px;min-height:190px;animation:bouncein .6s cubic-bezier(.3,1.6,.5,1) both;transition:transform .18s cubic-bezier(.3,1.8,.5,1),border-color .15s}
+.card:hover,.card:focus-visible{transform:translateY(-6px) rotate(-1.2deg) scale(1.03);border-color:var(--fg)}
+.card:hover .mascot,.card:hover .ico{animation:hop .5s ease-in-out infinite alternate}
+.card b{font-family:var(--display);font-weight:400;font-size:34px;line-height:1;text-transform:uppercase}
+.card .code{color:var(--dim);font-size:13px}.card .meta{color:var(--faint);font-size:12px;margin-top:auto}
+.card .enter{font-size:12px;letter-spacing:.1em}
+.ico{font-family:var(--display);font-size:40px;line-height:1;display:inline-block}
+.mascot{display:inline-block;color:var(--fg);animation:waddle 1.8s ease-in-out infinite;transform-origin:50% 100%}
+.mascot svg{display:block}.crumb .mascot svg{width:34px;height:38px}
+.byline{margin:4px 0 0;color:var(--dim);font-size:14px;text-align:center}.byline b{color:var(--fg);animation:glowpulse 2s ease-in-out infinite alternate}
+@keyframes bouncein{0%{opacity:0;transform:translateY(30px) scale(.85)}100%{opacity:1;transform:none}}
+@keyframes hop{to{transform:translateY(-8px)}}
+@keyframes waddle{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes wobble{0%,100%{transform:rotate(0)}50%{transform:rotate(-1deg) scale(1.01)}}
+@keyframes jelly{0%{transform:scale(1)}30%{transform:scale(1.12,.9)}50%{transform:scale(.94,1.06)}70%{transform:scale(1.03,.98)}100%{transform:scale(1)}}
+.btn:active,.opt:active,.cmd:active,.dom:active,.card:active{animation:jelly .35s ease}
+.cmd,.dom,.opt{transition:transform .15s cubic-bezier(.3,1.8,.5,1)}
+.cmd:hover{transform:translateY(-3px) rotate(-.6deg)}
+.opt:hover:not([disabled]){transform:translateX(4px)}
+.go:hover{animation:jelly .5s ease}
+main#view>.stack{animation:bouncein .45s cubic-bezier(.3,1.5,.5,1) both}
 .legal{margin:14px 0 0;color:var(--faint);font-size:11px;text-align:center;letter-spacing:.04em}
 
 /* quiz */
@@ -280,6 +311,8 @@ input[type=radio],input[type=checkbox]{accent-color:var(--fg)}
   .go{align-self:stretch}
   .go kbd{display:none}
   .cmds{grid-template-columns:1fr}
+  .course b{font-size:19px}
+  .course span{font-size:11px}
   .dom{grid-template-columns:34px minmax(0,1fr) 44px}
   .dom .meter{grid-column:2/4}
   .dom .pct{grid-row:1;grid-column:3}
@@ -295,41 +328,55 @@ input[type=radio],input[type=checkbox]{accent-color:var(--fg)}
 <body>
 <div class="wrap" id="wrap">
   <div class="bar">
-    <button class="brand" data-act="home" aria-label="Core 1 Bench home"><b>CORE1_BENCH</b><span>220-1201</span></button>
+    <button class="brand" data-act="home" aria-label="Home"><b id="brandName">CORE1_BENCH</b><span id="brandCode">220-1201</span></button>
     <div class="spacer"></div>
     <div class="stat" title="Days in a row you've studied"><span class="led" id="streakLed"></span><strong id="streakN">0</strong>D STREAK</div>
     <div class="stat" title="Experience points"><strong id="xpN">0</strong>XP · LVL <strong id="lvlN">1</strong></div>
     <button class="snd" id="sndBtn" data-act="snd" title="Sound on or off (M)">SND:ON</button>
   </div>
   <main id="view"></main>
-  <p class="legal">Independent study tool. Not affiliated with or endorsed by CompTIA. CompTIA and A+ are trademarks of CompTIA, Inc.</p>
+  <p class="legal">Independent study tool. Not affiliated with or endorsed by CompTIA. CompTIA, A+, and Linux+ are trademarks of CompTIA, Inc.<br>Made by damaris ingram. Yes, it's slightly vibecoded. I want to study efficiently and make fun projects.</p>
 </div>
 <div class="banner" id="banner" hidden><b></b><span></span></div>
 <canvas id="fx" hidden></canvas>
 <div class="toast" id="toast" hidden></div>
 
 <script src="bank.js"></script>
+<script src="core2.js"></script>
+<script src="linux.js"></script>
 <script>
 (function(){
 "use strict";
 
 /* ───────── constants ───────── */
-const DOMAINS={
+/* Courses. Core 1 lives in bank.js (window.BANK / window.FACTS); the others register themselves in window.COURSES. */
+const COURSES=Object.assign({},window.COURSES||{});
+COURSES.core1={id:"core1",name:"A+ Core 1",brand:"CORE1_BENCH",code:"220-1201",exam:"CompTIA A+ Core 1 (220-1201)",bios:"v1.201",
+  lightning:"Ports, RAID, Wi-Fi, printers",bank:window.BANK||[],domains:{
   1:{name:"Mobile Devices",short:"Mobile",w:13},
   2:{name:"Networking",short:"Networking",w:23},
   3:{name:"Hardware",short:"Hardware",w:25},
   4:{name:"Virtualization & Cloud",short:"Virt & Cloud",w:11},
   5:{name:"Hardware & Network Troubleshooting",short:"Troubleshooting",w:28}
-};
-/* Topic tracks cut across domains. Questions keep their real domain so exam weighting stays honest. */
-const TOPICS={
+},topics:{
   printers:{name:"Printers & MFDs",short:"Printers",ref:"PR",note:"Spread across D3 + D5",match:q=>/print/i.test(q.t||"")}
-};
+}};
+const COURSE_ORDER=["core1","core2","linux"].filter(k=>COURSES[k]);
+let COURSE,DOMAINS,DOMAIN_IDS,TOPICS,BANK;
 const MIN=60e3, DAY=864e5;
 const INTERVAL=[0,10*MIN,DAY,3*DAY,7*DAY,21*DAY];
 const LETTERS="ABCDEFGH";
 const FACTS=window.FACTS||{};
-const BANK=window.BANK||[];
+/* Topic tracks cut across domains. Questions keep their real domain so exam weighting stays honest. */
+function useCourse(id){
+  COURSE=COURSES[id]||COURSES.core1;
+  DOMAINS=COURSE.domains;DOMAIN_IDS=Object.keys(DOMAINS).map(Number);
+  TOPICS={};for(const [k,t] of Object.entries(COURSE.topics||{}))TOPICS[k]=Object.assign({},t,{match:t.match||(q=>new RegExp(t.re,"i").test(q.t||""))});
+  BANK=COURSE.bank.map(q=>Object.assign({c:COURSE.id},q));
+  document.title=COURSE.name+" · Cert Bench";
+  const bn=document.getElementById("brandName");if(bn){bn.textContent=COURSE.brand;document.getElementById("brandCode").textContent=COURSE.code}
+}
+const courseOf=id=>id.startsWith("g:dr:")?id.split(":")[2]:id.startsWith("g:")?"core1":null;
 
 /* ───────── helpers ───────── */
 const $=s=>document.querySelector(s);
@@ -403,11 +450,16 @@ function applyLook(){
 const UI={open:{}};
 
 /* ───────── state ───────── */
-const defState=()=>({v:1,stats:{},xp:0,days:{},recent:[],lightningBest:0,bestCombo:0,settings:{roundLen:10,goal:30,autoNext:false,sound:true,crt:true,phosphor:"amber"},updatedAt:0});
+const defState=()=>({v:1,stats:{},xp:0,days:{},recent:[],lightningBest:0,lbest:{},bestCombo:0,settings:{roundLen:10,goal:30,autoNext:false,sound:true,crt:true,phosphor:"amber",course:"core1"},updatedAt:0});
 const defBank=()=>({v:1,overrides:{},added:{},hidden:[],updatedAt:0});
 let S=Object.assign(defState(),LS.get("c1b.state")||{});
 let B=Object.assign(defBank(),LS.get("c1b.bank")||{});
 S.settings=Object.assign(defState().settings,S.settings||{});
+useCourse(S.settings.course);
+/* Lightning high score per course. Core 1 keeps the original field so old saves carry over. */
+const bestL=()=>COURSE.id==="core1"?S.lightningBest:(S.lbest||{})[COURSE.id]||0;
+function setBestL(v){if(COURSE.id==="core1")S.lightningBest=v;else{S.lbest=S.lbest||{};S.lbest[COURSE.id]=v}}
+function switchCourse(id){if(!COURSES[id])return;if(id!==COURSE.id){S.settings.course=id;save("state");useCourse(id)}bootDone=false;view="home";render();SFX.play("level")}
 
 /* ───────── persistence: this browser always, plus the viewer's private db space when available ───────── */
 const remote={ok:false,refs:{},status:"device"};
@@ -443,7 +495,7 @@ async function connect(){
     const [rs,rb]=await timeout(Promise.all([remote.refs.state.get(),remote.refs.bank.get()]),10000);
     remote.ok=true;
     let changed=false;
-    if(rs.exists&&(rs.data().updatedAt||0)>(S.updatedAt||0)){S=Object.assign(defState(),clone(rs.data()));S.settings=Object.assign(defState().settings,S.settings||{});LS.set("c1b.state",S);changed=true}
+    if(rs.exists&&(rs.data().updatedAt||0)>(S.updatedAt||0)){S=Object.assign(defState(),clone(rs.data()));S.settings=Object.assign(defState().settings,S.settings||{});LS.set("c1b.state",S);useCourse(S.settings.course);changed=true}
     else if(S.updatedAt)flush("state");
     if(rb.exists&&(rb.data().updatedAt||0)>(B.updatedAt||0)){B=Object.assign(defBank(),clone(rb.data()));LS.set("c1b.bank",B);changed=true}
     else if(B.updatedAt)flush("bank");
@@ -462,16 +514,17 @@ async function connectAI(){
 
 /* ───────── question pool ───────── */
 function builtIn(id){return BANK.find(q=>q.id===id)}
+const addedIn=q=>(q.c||"core1")===COURSE.id;
 function resolve(id){
-  if(id.startsWith("g:"))return genFromId(id);
-  if(B.added[id])return B.added[id];
-  if(B.overrides[id])return Object.assign({},B.overrides[id],{id});
-  return builtIn(id)||null;
+  if(id.startsWith("g:"))return courseOf(id)===COURSE.id?genFromId(id):null;
+  if(B.added[id])return addedIn(B.added[id])?B.added[id]:null;
+  const b=builtIn(id);if(!b)return null;
+  return B.overrides[id]?Object.assign({c:COURSE.id},B.overrides[id],{id}):b;
 }
 function allQuestions(){
   const out=[];
   for(const q of BANK){if(B.hidden.includes(q.id))continue;out.push(B.overrides[q.id]?Object.assign({},B.overrides[q.id],{id:q.id}):q)}
-  for(const q of Object.values(B.added))if(!B.hidden.includes(q.id))out.push(q);
+  for(const q of Object.values(B.added))if(addedIn(q)&&!B.hidden.includes(q.id))out.push(q);
   return out;
 }
 
@@ -521,13 +574,31 @@ const GEN_KEYS={
 };
 const GEN_DOMAIN={port:2,portIn:2,wifi:2,wifiGen:2,cable:2,raid:3,raidMin:3,ram:3,usb:3,prn:5};
 const GEN_TOPIC={prn:"printers"};
-function genFromId(id){const [,kind,...rest]=id.split(":");const key=rest.join(":");return G[kind]?G[kind](key):null}
-const genKinds=(domain,topic)=>Object.keys(G).filter(k=>(!domain||GEN_DOMAIN[k]===domain)&&(!topic||GEN_TOPIC[k]===topic)&&GEN_KEYS[k]().length);
+/* Drills: a course's fact tables, written as {a, b} pairs. "Which command {b}?" → a, with the other a's as distractors. */
+function drillQ(cid,dr,key){
+  const it=dr.items.find(x=>x.a===key);if(!it)return null;
+  const base={id:`g:dr:${cid}:${dr.k}:${key}`,c:cid,d:dr.d,t:dr.t,gen:true,h:it.h||dr.h||""};
+  const fill=s=>s.replace("{a}",()=>it.a).replace("{b}",()=>it.b);
+  if(dr.type==="input")return Object.assign(base,{type:"input",q:fill(dr.q),ans:[it.a,...(it.alt||[])],x:fill(dr.x||"{a}: {b}.")});
+  const others=sampleN(dr.items.filter(x=>x!==it&&x.a!==it.a),3);const w={};
+  others.forEach((x,i)=>w[i+1]=(dr.w||"{a} {b}.").replace("{a}",()=>x.a).replace("{b}",()=>x.b));
+  return Object.assign(base,{type:"mc",q:fill(dr.q),o:[it,...others].map(x=>x.a),a:0,w,x:fill(dr.x||"{a} {b}.")});
+}
+function genFromId(id){
+  const [,kind,...rest]=id.split(":");
+  if(kind==="dr"){const [cid,dk,...k]=rest;const c=COURSES[cid];const dr=c&&(c.drills||[]).find(x=>x.k===dk);return dr?drillQ(cid,dr,k.join(":")):null}
+  const key=rest.join(":");return G[kind]?G[kind](key):null;
+}
+function genSpecs(){
+  if(COURSE.id==="core1")return Object.keys(G).map(k=>({d:GEN_DOMAIN[k],topic:GEN_TOPIC[k]||"",keys:GEN_KEYS[k],make:key=>G[k](key)}));
+  return (COURSE.drills||[]).map(dr=>({d:dr.d,topic:dr.topic||"",keys:()=>dr.items.map(x=>x.a),make:key=>drillQ(COURSE.id,dr,key)}));
+}
+const genKinds=(domain,topic)=>genSpecs().filter(s=>(!domain||s.d===domain)&&(!topic||s.topic===topic)&&s.keys().length);
 function randomGen(domain,topic){
   const kinds=genKinds(domain,topic);
   if(!kinds.length)return null;
-  const k=kinds[Math.floor(Math.random()*kinds.length)];const keys=GEN_KEYS[k]();
-  return G[k](keys[Math.floor(Math.random()*keys.length)]);
+  const s=kinds[Math.floor(Math.random()*kinds.length)];const keys=s.keys();
+  return s.make(keys[Math.floor(Math.random()*keys.length)]);
 }
 
 /* ───────── spacing: which questions are due ───────── */
@@ -584,7 +655,7 @@ function updateBar(){
 }
 
 /* ───────── round state ───────── */
-let view="home", R=null, E=null;
+let view="pick", R=null, E=null;
 
 function startRound(mode,opts={}){
   const n=S.settings.roundLen;
@@ -659,11 +730,11 @@ function next(){
 }
 function finish(){
   if(!R)return;
-  if(R.mode==="lightning"){const sc=R.results.filter(r=>r.ok).length;if(sc>S.lightningBest){S.lightningBest=sc;R.newBest=true}save("state")}
+  if(R.mode==="lightning"){const sc=R.results.filter(r=>r.ok).length;if(sc>bestL()){setBestL(sc);R.newBest=true}save("state")}
   view="summary";render();
   const firsts=R.results.filter(r=>!r.comeback),pct=firsts.length?firsts.filter(r=>r.ok).length/firsts.length:0;
   SFX.play("done");
-  if(R.newBest){banner("NEW HIGH SCORE",S.lightningBest+" in 60 seconds");confetti(140)}
+  if(R.newBest){banner("NEW HIGH SCORE",bestL()+" in 60 seconds");confetti(140)}
   else if(R.mode!=="lightning"&&pct>=.7)confetti(pct===1?160:90);
 }
 let lightT;
@@ -680,7 +751,7 @@ function tickLightning(){
 }
 
 /* ───────── Claude: explain another way + follow-ups ───────── */
-const TUTOR=`You're tutoring someone for the CompTIA A+ Core 1 (220-1201) exam. They already have a solid IT foundation and they have ADHD, so keep it tight and concrete.
+const tutor=()=>`You're tutoring someone for the ${COURSE.exam} exam. They already have a solid IT foundation and they have ADHD, so keep it tight and concrete.
 Rules: under 120 words. Plain language. Use one real-world analogy or on-the-job scenario. Focus on the misconception behind their pick, not just restating the answer. No headings, no preamble. Short paragraphs, or up to 3 bullets starting with "- ". You may bold one key phrase with **like this**.`;
 function qContext(c){
   const q=c.q;let s=`Question: ${q.ticket?"Ticket: \""+q.ticket+"\" ":""}${q.q}\n`;
@@ -709,7 +780,7 @@ async function askClaude(follow){
     c.ai.msgs.push({role:"assistant",content:c.ai.text||"(no answer)"},{role:"user",content:v});
     c.ai.asked=v;
   }else{
-    c.ai.msgs=[{role:"user",content:TUTOR+"\n\n"+qContext(c)+"\n\nExplain this a different way than the reference explanation, so it actually clicks."}];
+    c.ai.msgs=[{role:"user",content:tutor()+"\n\n"+qContext(c)+"\n\nExplain this a different way than the reference explanation, so it actually clicks."}];
     c.ai.asked="";
   }
   c.ai.busy=true;c.ai.text="";c.ai.err="";renderAI();
@@ -748,9 +819,9 @@ async function generateQuestions(d,topic){
   genBusy=true;render();toast("Claude is writing 5 questions. This can take up to a minute.");
   const example=JSON.stringify({t:"DNS",ticket:"I can ping 8.8.8.8 but websites won't load.",q:"What's the likely problem?",o:["DNS name resolution","The default gateway","DHCP","The subnet mask"],a:0,w:{"1":"If the gateway were wrong you couldn't reach 8.8.8.8 at all.","2":"They have a working IP.","3":"A wrong mask would also break routing."},x:"Reaching an IP but not a name is the classic DNS symptom.",h:"Numbers work, names don't → DNS."});
   const have=allQuestions().filter(q=>q.d===d).map(q=>"- "+q.q).slice(0,60).join("\n");
-  const prompt=`Write 5 new multiple-choice practice questions for CompTIA A+ Core 1 (220-1201), domain ${d}.0 ${DOMAINS[d].name}${topic?", focused on: "+topic:""}.
+  const prompt=`Write 5 new multiple-choice practice questions for ${COURSE.exam}, domain ${d}.0 ${DOMAINS[d].name}${topic?", focused on: "+topic:""}.
 The learner has a solid foundation and ADHD: make them scenario-based and specific (like MeasureUp-quality items), with tempting distractors built on real misconceptions. Mix in help-desk tickets for about half.
-Every fact must be accurate for the 220-1201 objectives. Exactly 4 options, one correct. Put the correct answer at any index.
+Every fact must be accurate for the ${COURSE.code} objectives. Exactly 4 options, one correct. Put the correct answer at any index.
 "w" maps EVERY wrong option's index (as a string) to one or two sentences on why that pick is wrong. "x" is a 1–2 sentence explanation of why the answer is right. "h" is a short memory hook. "ticket" is optional (omit or use an empty string).
 Avoid repeating these existing questions:
 ${have}
@@ -764,7 +835,7 @@ ${example}`;
       if(!g||typeof g.q!=="string"||!Array.isArray(g.o)||g.o.length<2||!Number.isInteger(g.a)||g.a<0||g.a>=g.o.length)continue;
       const id="ai-"+Date.now().toString(36)+"-"+n;
       const w={};for(const [k,v] of Object.entries(g.w||{}))if(typeof v==="string")w[k]=v;
-      B.added[id]={id,d,t:String(g.t||DOMAINS[d].short).slice(0,40),type:"mc",ticket:g.ticket?String(g.ticket):"",q:g.q,o:g.o.map(String),a:g.a,w,x:String(g.x||""),h:String(g.h||""),ai:true,made:Date.now()};
+      B.added[id]={id,c:COURSE.id,d,t:String(g.t||DOMAINS[d].short).slice(0,40),type:"mc",ticket:g.ticket?String(g.ticket):"",q:g.q,o:g.o.map(String),a:g.a,w,x:String(g.x||""),h:String(g.h||""),ai:true,made:Date.now()};
       n++;
     }
     if(n){save("bank");toast(`Added ${n} new ${DOMAINS[d].short} questions. They're tagged "Claude-made" in the editor.`)}
@@ -781,7 +852,7 @@ ${example}`;
 function render(){
   updateBar();
   const v=$("#view");$("#wrap").classList.toggle("wide",view==="editor");
-  v.innerHTML=view==="home"?homeHTML():view==="quiz"?quizHTML():view==="summary"?summaryHTML():editorHTML();
+  v.innerHTML=view==="pick"?pickHTML():view==="home"?homeHTML():view==="quiz"?quizHTML():view==="summary"?summaryHTML():editorHTML();
   afterRender();
 }
 function afterRender(){
@@ -795,6 +866,18 @@ function afterRender(){
 
 let bootDone=false;
 function asciiBar(v,max,n){const f=Math.max(0,Math.min(n,Math.round(n*v/max)));return "["+"#".repeat(f)+"-".repeat(n-f)+"]"}
+const PENGUIN=`<svg viewBox="0 0 64 72" width="56" height="63" role="img" aria-label="Penguin"><ellipse cx="32" cy="40" rx="22" ry="28" fill="#1b1b1f" stroke="currentColor" stroke-width="2"/><ellipse cx="32" cy="46" rx="14" ry="20" fill="#f4f1e6"/><circle cx="25" cy="24" r="5" fill="#fff"/><circle cx="39" cy="24" r="5" fill="#fff"/><circle cx="26" cy="25" r="2.4" fill="#111"/><circle cx="38" cy="25" r="2.4" fill="#111"/><path d="M26 31 L38 31 L32 38 Z" fill="#f2a524"/><ellipse cx="22" cy="68" rx="8" ry="3.5" fill="#f2a524"/><ellipse cx="42" cy="68" rx="8" ry="3.5" fill="#f2a524"/></svg>`;
+const ICONS={core1:`<span class="ico" aria-hidden="true">[▣]</span>`,core2:`<span class="ico" aria-hidden="true">[⚿]</span>`};
+function pickHTML(){
+  return `<div class="stack pick">
+  <pre class="boot anim" aria-hidden="true"><span class="ln">CERT_BENCH . SELECT YOUR EXAM_</span></pre>
+  <h1 class="pick-h">What are we studying today?</h1>
+  <div class="cards">${COURSE_ORDER.map((k,i)=>{const c=COURSES[k];const qs=c.bank.length;return `<button class="card" data-act="course" data-c="${k}" style="animation-delay:${i*110}ms">
+    ${k==="linux"?`<span class="mascot big">${PENGUIN}</span>`:ICONS[k]||""}
+    <b>${esc(c.name)}</b><span class="code">${esc(c.code)}</span><span class="meta">${qs}+ questions · ${Object.keys(c.domains).length} domains</span><span class="enter">ENTER &gt;</span></button>`}).join("")}</div>
+  <p class="byline">made by <b>damaris ingram</b></p>
+  </div>`;
+}
 function homeHTML(){
   const t=S.days[today()]||0,goal=S.settings.goal;
   const weak=weakIds().length,st=streak();
@@ -803,8 +886,9 @@ function homeHTML(){
   const ln=(k,v)=>`<span class="ln"><span class="k">${k}</span> ${v}</span>`;
   const anim=!bootDone;bootDone=true;
   return `<div class="stack">
+  <div class="crumb"><button class="btn small ghost" data-act="pick">&lt; ALL COURSES</button>${COURSE.id==="linux"?`<span class="mascot" aria-hidden="true">${PENGUIN}</span>`:""}<span class="silk">${esc(COURSE.name)} · ${esc(COURSE.code)}</span></div>
   <pre class="boot ${anim?"anim":""}" aria-label="System status">${[
-    ln("BIOS v1.201 .","<span class=\"ok-t\">READY</span>"),
+    ln("BIOS "+COURSE.bios+" .","<span class=\"ok-t\">READY</span>"),
     ln("BANK ........",allQuestions().length+" LOADED"),
     ln("TODAY .......",asciiBar(t,goal,10)+" "+t+"/"+goal),
     ln("WEAK SPOTS ..",weak+" QUEUED"),
@@ -814,11 +898,11 @@ function homeHTML(){
   <p class="sub">${esc(hello)}</p>
   <div class="cmds">
     <button class="cmd" data-act="weak"><kbd>W</kbd><b>Weak spots</b><span>${weak?weak+" missed, drill them till they stick":"Nothing missed yet"}</span></button>
-    <button class="cmd" data-act="lightning"><kbd>L</kbd><b>Lightning 60s</b><span>Ports, RAID, Wi-Fi, printers · best ${S.lightningBest}</span></button>
+    <button class="cmd" data-act="lightning"><kbd>L</kbd><b>Lightning 60s</b><span>${esc(COURSE.lightning)} · best ${bestL()}</span></button>
   </div>
 
   <details class="drawer" data-drawer="domains" ${UI.open.domains?"open":""}><summary>Domains</summary><div class="drawer-body">
-    <div class="domains">${[1,2,3,4,5].map(d=>{const m=mastery(d);return `
+    <div class="domains">${DOMAIN_IDS.map(d=>{const m=mastery(d);return `
       <button class="dom" data-act="domain" data-d="${d}">
         <span class="ref">D${d}</span>
         <span class="nm">${esc(DOMAINS[d].name)}<small>${DOMAINS[d].w}% of exam · ${m.seen}/${m.total} seen${m.acc!=null?" · "+m.acc+"% right":""}</small></span>
@@ -851,7 +935,7 @@ function homeHTML(){
   </div></details>
   </div>`;
 }
-function weakestDomain(){let best=1,lo=1e9;for(const d of [1,2,3,4,5]){const m=mastery(d);const s=m.pct-DOMAINS[d].w/4;if(s<lo){lo=s;best=d}}return best}
+function weakestDomain(){let best=1,lo=1e9;for(const d of DOMAIN_IDS){const m=mastery(d);const s=m.pct-DOMAINS[d].w/4;if(s<lo){lo=s;best=d}}return best}
 let resetArmed=false;
 
 function quizHTML(){
@@ -945,7 +1029,7 @@ function summaryHTML(){
   const fixed=res.filter(r=>r.comeback&&r.ok).length;
   const missed=[...new Map(res.filter(r=>!r.ok).map(r=>[r.id,r])).values()];
   const stillMissed=missed.filter(m=>!res.some(r=>r.id===m.id&&r.comeback&&r.ok));
-  const head=L?`<div class="score"><span class="n tabnum">${res.filter(r=>r.ok).length}</span><span class="of">right in 60 seconds</span></div>${R.newBest?`<p class="silk" style="color:var(--led-ink)">New personal best</p>`:`<p class="silk">Best: ${S.lightningBest}</p>`}`
+  const head=L?`<div class="score"><span class="n tabnum">${res.filter(r=>r.ok).length}</span><span class="of">right in 60 seconds</span></div>${R.newBest?`<p class="silk" style="color:var(--led-ink)">New personal best</p>`:`<p class="silk">Best: ${bestL()}</p>`}`
     :`<div class="done-head"><span class="grade" aria-label="Grade">${gradeOf(right,firsts.length)}</span><span class="silk">Round complete</span><div class="score"><span class="n tabnum">${right}</span><span class="of">/ ${firsts.length} first try</span></div></div>`;
   const msg=L?"":right===firsts.length?"Clean sweep.":fixed?`You missed ${missed.length} and fixed ${fixed} on the comeback.`:missed.length?`${missed.length} to review below.`:"";
   return `<div class="stack">
@@ -980,11 +1064,11 @@ function selectQ(id){
 }
 function newQ(){
   E.sel="u-"+Date.now().toString(36);E.isNew=true;E.delArmed=false;
-  E.draft={id:E.sel,d:E.filter.d||1,t:"",type:"mc",ticket:"",q:"",o:["","","",""],a:0,w:{},x:"",h:"",mine:true};
+  E.draft={id:E.sel,c:COURSE.id,d:E.filter.d||1,t:"",type:"mc",ticket:"",q:"",o:["","","",""],a:0,w:{},x:"",h:"",mine:true};
 }
 function edList(){
   const f=E.filter,txt=f.text.toLowerCase();
-  const rows=[...BANK.map(q=>B.overrides[q.id]?Object.assign({},B.overrides[q.id],{id:q.id}):q),...Object.values(B.added)];
+  const rows=[...BANK.map(q=>B.overrides[q.id]?Object.assign({},B.overrides[q.id],{id:q.id}):q),...Object.values(B.added).filter(addedIn)];
   return rows.filter(q=>{
     const hidden=B.hidden.includes(q.id),edited=!!B.overrides[q.id],mine=!!B.added[q.id];
     if(f.d&&q.d!==f.d)return false;
@@ -1003,7 +1087,7 @@ function editorHTML(){
     <div class="sectionhead"><h2>Question bank</h2><button class="btn small primary" data-act="ed-new">New question</button></div>
     <div class="filters">
       <input id="edSearch" type="search" placeholder="Search questions" value="${esc(E.filter.text)}" data-filter="text" aria-label="Search questions">
-      <select id="edDom" data-filter="d" aria-label="Domain"><option value="0">All domains</option>${[1,2,3,4,5].map(d=>`<option value="${d}" ${E.filter.d===d?"selected":""}>D${d} ${esc(DOMAINS[d].short)}</option>`).join("")}</select>
+      <select id="edDom" data-filter="d" aria-label="Domain"><option value="0">All domains</option>${DOMAIN_IDS.map(d=>`<option value="${d}" ${E.filter.d===d?"selected":""}>D${d} ${esc(DOMAINS[d].short)}</option>`).join("")}</select>
       <select id="edShow" data-filter="show" aria-label="Show"><option value="all">All</option>${[["missed","I've missed"],["edited","Edited"],["mine","Added by me or Claude"],["hidden","Hidden"]].map(([v,l])=>`<option value="${v}" ${E.filter.show===v?"selected":""}>${l}</option>`).join("")}</select>
     </div>
     <div class="silk" style="margin-top:10px">${list.length} shown</div>
@@ -1029,7 +1113,7 @@ function formHTML(){
   return `<form class="stack" data-form="ed">
    <div class="sectionhead"><h2 style="font-size:22px;text-transform:uppercase">${E.isNew?"New question":"Edit question"}</h2><span class="silk">${esc(q.id)}${isBuilt?" · built-in":""}</span></div>
    <div class="grid2">
-     <div class="field"><label for="fD">Domain</label><select id="fD" data-f="d">${[1,2,3,4,5].map(d=>`<option value="${d}" ${q.d===d?"selected":""}>D${d} ${esc(DOMAINS[d].short)}</option>`).join("")}</select></div>
+     <div class="field"><label for="fD">Domain</label><select id="fD" data-f="d">${DOMAIN_IDS.map(d=>`<option value="${d}" ${q.d===d?"selected":""}>D${d} ${esc(DOMAINS[d].short)}</option>`).join("")}</select></div>
      <div class="field"><label for="fT">Topic</label><input id="fT" type="text" data-f="t" value="${esc(q.t||"")}"></div>
      <div class="field"><label for="fType">Type</label><select id="fType" data-f="type">${[["mc","One answer"],["multi","Pick several"],["order","Put in order"],["input","Type the answer"]].map(([v,l])=>`<option value="${v}" ${q.type===v?"selected":""}>${l}</option>`).join("")}</select></div>
    </div>
@@ -1108,11 +1192,13 @@ document.addEventListener("click",e=>{
   if(act!=="reset-progress"&&resetArmed){resetArmed=false}
   switch(act){
     case "snd":S.settings.sound=!S.settings.sound;save("state");updateBar();SFX.play("ok");if(view==="home")render();break;
-    case "home":clearTimeout(lightT);view="home";R=null;render();break;
+    case "home":clearTimeout(lightT);view=view==="home"?"pick":"home";R=null;render();break;
+    case "pick":view="pick";render();break;
     case "sprint":startRound("sprint");break;
     case "again":startRound(R&&R.mode==="weak"?"weak":"sprint",{domain:R?R.domain:0,topic:R?R.topic:""});break;
     case "domain":startRound("sprint",{domain:+el.dataset.d});break;
     case "topic":startRound("sprint",{topic:el.dataset.t});break;
+    case "course":switchCourse(el.dataset.c);break;
     case "weak":startRound("weak");break;
     case "lightning":startRound("lightning");break;
     case "drill-missed":{const ids=[...new Set(R.results.filter(r=>!r.ok).map(r=>r.id))];startRound("list",{list:ids});break}
@@ -1144,7 +1230,7 @@ document.addEventListener("click",e=>{
     case "io-copy":{const txt=JSON.stringify({core1bench:1,overrides:B.overrides,added:B.added,hidden:B.hidden},null,1);E.io=txt;const ta=$("#ioText");if(ta)ta.value=txt;
       try{navigator.clipboard.writeText(txt).then(()=>toast("Backup copied."),()=>{if(ta){ta.focus();ta.select()}toast("Couldn't copy automatically. The backup is selected; copy it yourself.")})}catch(err){if(ta){ta.focus();ta.select()}}break}
     case "io-import":{let d;try{d=JSON.parse(($("#ioText")||{}).value||"")}catch(err){toast("That doesn't look like a backup. Paste the full text you copied.");break}
-      if(!d||typeof d!=="object"||!(d.overrides||d.added||d.hidden)){toast("That doesn't look like a Core 1 Bench backup.");break}
+      if(!d||typeof d!=="object"||!(d.overrides||d.added||d.hidden)){toast("That doesn't look like a Bench backup.");break}
       Object.assign(B.overrides,d.overrides||{});Object.assign(B.added,d.added||{});B.hidden=[...new Set([...B.hidden,...(d.hidden||[])])];save("bank");E.io="";render();toast("Restored. Existing questions with the same id were replaced.");break}
   }
 });
