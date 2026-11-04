@@ -173,6 +173,7 @@ details.drawer>summary:hover{color:var(--fg)}
 .opt:hover:not([disabled]){transform:translateX(4px)}
 .go:hover{animation:jelly .5s ease}
 main#view>.stack{animation:bouncein .45s cubic-bezier(.3,1.5,.5,1) both}
+main#view>.stack.still{animation:none}
 .legal{margin:14px 0 0;color:var(--faint);font-size:11px;text-align:center;letter-spacing:.04em}
 
 /* quiz */
@@ -389,6 +390,69 @@ body.ph-shell .bar{border-color:var(--line)}
 /* paper: light mode, so the CRT vignette would just look dirty */
 body.ph-paper.crt::after{display:none}
 
+/* labs */
+.cmd.wide{grid-column:1/-1}
+.lab-h{font-size:34px}
+.lab-list{display:flex;flex-direction:column;gap:8px}
+.lab-row{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;text-align:left;width:100%;border:1px solid var(--line);background:var(--bg2);padding:12px 14px;min-height:64px}
+.lab-row:hover{border-color:var(--fg);background:var(--bg3)}
+.lab-row .ref{font-family:var(--display);font-size:24px;color:var(--dim)}
+.lab-row .nm{font-weight:600;min-width:0}
+.lab-row .nm small{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:4px;font-weight:400;font-size:12px;color:var(--dim)}
+.lab-row .best{font-size:13px;font-weight:600;white-space:nowrap}
+.lab-row .best.new{color:var(--acc)}
+.lab-scn{margin:0;max-width:66ch}
+.lab-tabs{display:flex;flex-wrap:wrap;gap:6px}
+.lab-tabs .btn[aria-selected="true"]{background:var(--acc);color:var(--on-acc);border-color:var(--acc);text-shadow:none}
+.lab-task{margin:0;display:flex;flex-direction:column;gap:4px}
+.lab-task:focus,.lab-score:focus{outline:none}
+.tray{display:flex;flex-wrap:wrap;gap:8px;padding:10px;border:1px dashed var(--line);min-height:56px;align-items:center}
+.lchip{border:1px solid var(--fg);background:var(--bg2);padding:6px 10px;min-height:40px;font-size:14px;text-align:left;touch-action:manipulation}
+.lchip:hover:not([disabled]){background:var(--bg3)}
+.lchip[aria-pressed="true"]{background:var(--acc);color:var(--on-acc);border-color:var(--acc);text-shadow:none}
+.lchip[disabled]{cursor:default}
+.lchip.ok,.lctl.ok{border-color:var(--ok);color:var(--ok)}
+.lchip.bad,.lctl.bad{border-color:var(--bad);color:var(--bad)}
+.lchip.ok::after{content:" [OK]";font-size:11px}
+.lchip.bad::after{content:" [X]";font-size:11px}
+.buckets{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.bucket{border:1px solid var(--line);background:var(--bg2);display:flex;flex-direction:column;min-height:110px;cursor:pointer}
+.bucket.armed{border-color:var(--acc)}
+.bucket-h{background:var(--bg3);border:0;border-bottom:1px solid var(--line);padding:8px 10px;min-height:40px;font-weight:600;text-align:left;text-transform:uppercase;letter-spacing:.06em;font-size:13px}
+.bucket-h[disabled]{cursor:default}
+.bucket-items{display:flex;flex-wrap:wrap;gap:6px;padding:8px;align-content:flex-start;flex:1}
+.lconfig{display:flex;flex-direction:column;gap:12px}
+.lfield .lctl{max-width:420px}
+.lcheck{display:flex;align-items:center;gap:10px;min-height:40px}
+.lcheck input{width:22px;height:22px;flex:none}
+.lcheck input.bad{outline:2px solid var(--bad);outline-offset:2px}
+.lcheck input.ok{outline:2px solid var(--ok);outline-offset:2px}
+.ltable-wrap{overflow-x:auto}
+.ltable{border-collapse:collapse}
+.ltable th,.ltable td{border:1px solid var(--line);padding:8px 12px;text-align:center}
+.ltable th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);font-weight:600}
+.ltable th[scope=row]{text-align:left;color:var(--fg)}
+.ltable input{width:22px;height:22px}
+.ltable input.bad{outline:2px solid var(--bad);outline-offset:2px}
+.ltable input.ok{outline:2px solid var(--ok);outline-offset:2px}
+.diagram{position:relative;width:100%;max-width:600px;color:var(--fg)}
+.diagram svg{display:block;width:100%;height:100%}
+.slot-badge{position:absolute;transform:translate(-50%,-50%);width:34px;height:34px;padding:0;border:2px solid var(--acc);background:var(--bg);color:var(--fg);display:flex;align-items:center;justify-content:center;border-radius:50%;text-shadow:none}
+.slot-badge b{font-size:14px}
+.slot-badge.filled{background:var(--acc);color:var(--on-acc)}
+.diagram.armed .slot-badge:not([disabled]){box-shadow:0 0 0 3px var(--glow),0 0 0 2px var(--acc)}
+.slot-badge.ok{border-color:var(--ok);background:var(--ok);color:var(--bg)}
+.slot-badge.bad{border-color:var(--bad);background:var(--bad);color:var(--bg)}
+.slot-badge[disabled]{cursor:default}
+.slotlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.lab-score{display:flex;flex-wrap:wrap;align-items:baseline;gap:12px;border:2px solid var(--line);padding:8px 14px}
+.lab-score.ok{border-color:var(--ok)}
+.lab-score.bad{border-color:var(--bad)}
+.lab-score b{font-family:var(--display);font-weight:400;font-size:28px}
+.lab-fb{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.lab-fb span{display:block;color:var(--dim);font-size:14px}
+.lab-actions{display:flex;flex-wrap:wrap;gap:10px}
+.lab-rev{font-size:26px}
 @media (max-width:720px){
   .ed{grid-template-columns:minmax(0,1fr)}
   .list{max-height:40vh}
@@ -401,6 +465,7 @@ body.ph-paper.crt::after{display:none}
   .go{align-self:stretch}
   .go kbd{display:none}
   .cmds{grid-template-columns:1fr}
+  .lab-row{grid-template-columns:34px minmax(0,1fr) auto}
   .course b{font-size:19px}
   .course span{font-size:11px}
   .dom{grid-template-columns:34px minmax(0,1fr) 44px}
@@ -437,6 +502,8 @@ body.ph-paper.crt::after{display:none}
 <script src="core2.js"></script>
 <script src="linux.js"></script>
 <script src="sprint.js"></script>
+<script src="labs.js"></script>
+<script src="labs-data.js"></script>
 <script>
 (function(){
 "use strict";
@@ -546,7 +613,7 @@ function applyLook(){
 const UI={open:{}};
 
 /* ───────── state ───────── */
-const defState=()=>({v:1,stats:{},xp:0,days:{},recent:[],lightningBest:0,lbest:{},bestCombo:0,settings:{roundLen:10,goal:30,autoNext:false,sound:true,crt:true,phosphor:"rice",course:"core1",
+const defState=()=>({v:1,stats:{},xp:0,days:{},recent:[],lightningBest:0,lbest:{},bestCombo:0,labs:{},settings:{roundLen:10,goal:30,autoNext:false,sound:true,crt:true,phosphor:"rice",course:"core1",
   timeMode:"off",perQSec:60,perSprintMin:10,timeStyle:"gentle",qTypes:["mc","multi","order","input"],mixPreset:"exam",mix:{}},updatedAt:0});
 const defBank=()=>({v:1,overrides:{},added:{},hidden:[],updatedAt:0});
 let S=Object.assign(defState(),LS.get("c1b.state")||{});
@@ -556,7 +623,7 @@ useCourse(S.settings.course);
 /* Lightning high score per course. Core 1 keeps the original field so old saves carry over. */
 const bestL=()=>COURSE.id==="core1"?S.lightningBest:(S.lbest||{})[COURSE.id]||0;
 function setBestL(v){if(COURSE.id==="core1")S.lightningBest=v;else{S.lbest=S.lbest||{};S.lbest[COURSE.id]=v}}
-function switchCourse(id){if(!COURSES[id])return;if(id!==COURSE.id){S.settings.course=id;save("state");useCourse(id)}bootDone=false;view="home";render();SFX.play("level")}
+function switchCourse(id){if(!COURSES[id])return;LAB=null;if(id!==COURSE.id){S.settings.course=id;save("state");useCourse(id)}bootDone=false;view="home";render();SFX.play("level")}
 
 /* ───────── persistence: this browser always, plus the viewer's private db space when available ───────── */
 const remote={ok:false,refs:{},status:"device"};
@@ -980,7 +1047,7 @@ ${example}`;
 function render(){
   updateBar();
   const v=$("#view");$("#wrap").classList.toggle("wide",view==="editor");
-  v.innerHTML=view==="pick"?pickHTML():view==="home"?homeHTML():view==="quiz"?quizHTML():view==="summary"?summaryHTML():editorHTML();
+  v.innerHTML=view==="pick"?pickHTML():view==="home"?homeHTML():view==="quiz"?quizHTML():view==="summary"?summaryHTML():view==="labs"?labsHTML():view==="lab"?labHTML():editorHTML();
   afterRender();
 }
 function afterRender(){
@@ -1045,6 +1112,7 @@ function homeHTML(){
   <div class="cmds">
     <button class="cmd" data-act="weak"><kbd>W</kbd><b>Weak spots</b><span>${weak?weak+" missed, drill them till they stick":"Nothing missed yet"}</span></button>
     <button class="cmd" data-act="lightning"><kbd>L</kbd><b>Lightning 60s</b><span>${esc(COURSE.lightning)} · best ${bestL()}</span></button>
+    <button class="cmd wide" data-act="labs"><kbd>B</kbd><b>Labs</b><span>${labsLine()}</span></button>
   </div>
 
   <details class="drawer" data-drawer="domains" ${UI.open.domains?"open":""}><summary>Domains</summary><div class="drawer-body">
@@ -1346,6 +1414,176 @@ function onEdInput(t){
   }
 }
 
+/* ───────── labs: exam-style PBQs (logic in labs.js, content in labs-data.js) ───────── */
+const LABSET=Labs.validateAll(LabData.LABS,LabData.DIAGRAMS);
+LABSET.problems.forEach(p=>console.warn("Lab hidden: "+p));
+const KIND_CHIP={buckets:"BUCKETS",config:"CONFIG",diagram:"DIAGRAM"};
+const labsFor=id=>LABSET.valid.filter(l=>l.c===id);
+let LAB=null;
+function labsLine(){const ls=labsFor(COURSE.id),done=ls.filter(l=>(S.labs||{})[l.id]).length;return done?`${done} of ${ls.length} done`:`${ls.length} hands-on labs`}
+function openLabs(){LAB=null;view="labs";render();window.scrollTo({top:0})}
+function openLab(id){
+  const lab=labsFor(COURSE.id).find(l=>l.id===id);if(!lab)return;
+  LAB={lab,part:0,order:lab.parts.map(p=>p.kind==="buckets"?shuffle(p.items.map((_,i)=>i)):[]),
+    answers:lab.parts.map(p=>Labs.emptyAnswer(p)),checked:lab.parts.map(()=>null),first:lab.parts.map(()=>null),sel:null,done:null};
+  view="lab";render();window.scrollTo({top:0});
+}
+/* re-render, then put keyboard focus back where the user was */
+function labRender(focusSel){render();if(focusSel){const el=$(focusSel);if(el)el.focus({preventScroll:true})}}
+const labLocked=()=>!LAB||!!LAB.checked[LAB.part];
+function labSet(key,value){
+  if(labLocked())return;const i=LAB.part;
+  LAB.answers[i]=value===undefined?Labs.unplace(LAB.answers[i],key):Labs.place(LAB.answers[i],key,value);
+}
+function labChange(t){
+  const v=t.dataset.t==="check"?t.checked:t.value===""?undefined:+t.value;
+  labSet(t.dataset.t==="slot"?+t.dataset.lab:t.dataset.lab,v);labRender("#"+t.id);
+}
+function labItem(k){
+  if(labLocked())return;const ans=LAB.answers[LAB.part];
+  if(ans[k]!=null){labSet(k,undefined);LAB.sel=null}
+  else LAB.sel=LAB.sel&&LAB.sel.kind==="item"&&LAB.sel.key===k?null:{kind:"item",key:k};
+  SFX.play("tick");labRender('[data-act=lab-item][data-k="'+k+'"]');
+}
+function labBucket(b){
+  if(labLocked()||!LAB.sel||LAB.sel.kind!=="item")return;
+  labSet(LAB.sel.key,b);LAB.sel=null;SFX.play("tick");labRender('.bucket-h[data-b="'+b+'"]');
+}
+function labDrop(k,zone){
+  if(labLocked()||isNaN(k))return;
+  labSet(k,zone==="tray"?undefined:+zone);LAB.sel=null;SFX.play("tick");render();
+}
+function labLabel(l){
+  if(labLocked())return;
+  LAB.sel=LAB.sel&&LAB.sel.kind==="label"&&LAB.sel.key===l?null:{kind:"label",key:l};
+  labRender('[data-act=lab-label][data-l="'+l+'"]');
+}
+function labSlot(k){
+  if(labLocked())return;
+  if(LAB.sel&&LAB.sel.kind==="label"){labSet(k,LAB.sel.key);LAB.sel=null;SFX.play("tick")}
+  else if(LAB.answers[LAB.part][k]!=null)labSet(k,undefined);
+  labRender('[data-act=lab-slot][data-k="'+k+'"]');
+}
+function labCheck(){
+  const i=LAB.part,p=LAB.lab.parts[i];
+  if(LAB.checked[i]||!Labs.ready(p,LAB.answers[i]))return;
+  const r=Labs.gradePart(p,LAB.answers[i]);
+  LAB.checked[i]=r;if(!LAB.first[i])LAB.first[i]=r;LAB.sel=null;
+  SFX.play(r.points===r.max?"ok":"bad");labRender(".lab-score");
+}
+function labRetry(){
+  const i=LAB.part;LAB.answers[i]=Labs.emptyAnswer(LAB.lab.parts[i]);LAB.checked[i]=null;LAB.sel=null;
+  labRender(".lab-task");
+}
+const fieldOf=(p,key)=>{const [r,c]=String(key).split(".").map(Number);return p.rows[r][c]};
+const markName=(p,key)=>p.kind==="buckets"?p.items[key].t:p.kind==="diagram"?"Slot "+p.slots[key].n:fieldOf(p,key).label;
+const markCls=m=>m?(m.ok?" ok":" bad"):"";
+
+function labsHTML(){
+  const labs=labsFor(COURSE.id),prog=S.labs||{};
+  return `<div class="stack">
+  <div class="crumb"><button class="btn small ghost" data-act="home-course">&lt; COURSE HOME</button><span class="silk">${esc(COURSE.name)} · Labs</span></div>
+  <h2 class="lab-h">Labs</h2>
+  <p class="sub">Hands-on questions like the exam's performance-based ones. Every item counts, so partial answers still score.</p>
+  ${labs.length?`<div class="lab-list">${labs.map(l=>{const pr=prog[l.id],kinds=[...new Set(l.parts.map(x=>x.kind))],n=l.parts.length;return `
+    <button class="lab-row" data-act="lab-open" data-id="${esc(l.id)}">
+      <span class="ref">D${l.d}</span>
+      <span class="nm">${esc(l.title)}<small>${kinds.map(k=>`<span class="chip">${KIND_CHIP[k]}</span>`).join("")}<span>${n} part${n===1?"":"s"}</span></small></span>
+      <span class="best${pr?"":" new"}">${pr?"Best "+pr.best+"%":"New"}</span>
+    </button>`}).join("")}</div>`:`<p class="sub">No labs yet</p>`}
+  </div>`;
+}
+function labHTML(){
+  if(!LAB)return labsHTML();
+  if(LAB.done)return labSummaryHTML();
+  const lab=LAB.lab,i=LAB.part,p=lab.parts[i],n=lab.parts.length,ans=LAB.answers[i],res=LAB.checked[i];
+  const body=p.kind==="buckets"?bucketsHTML(p,i,ans,res):p.kind==="config"?configHTML(p,ans,res):diagramHTML(p,ans,res);
+  const wrong=res?res.marks.filter(m=>!m.ok):[];
+  const still=LAB.shown==="play";LAB.shown="play";
+  return `<div class="stack lab${still?" still":""}">
+  <div class="crumb"><button class="btn small ghost" data-act="lab-back">&lt; LABS</button><span class="silk">D${lab.d} · ${esc(DOMAINS[lab.d]?DOMAINS[lab.d].short||DOMAINS[lab.d].name:"")}</span></div>
+  <h2 class="lab-h">${esc(lab.title)}</h2>
+  <p class="lab-scn">${esc(lab.scenario)}</p>
+  ${n>1?`<div class="lab-tabs" role="tablist">${lab.parts.map((_,pi)=>`<button role="tab" class="btn small" data-act="lab-part" data-i="${pi}" aria-selected="${pi===i}">Part ${pi+1} of ${n}${LAB.first[pi]?` · ${LAB.first[pi].points}/${LAB.first[pi].max}`:""}</button>`).join("")}</div>`:""}
+  <p class="lab-task" tabindex="-1"><b>${esc(p.task)}</b>${res?"":`<span class="silk">${p.kind==="buckets"?"Tap an item, then a bucket. Drag works too.":p.kind==="diagram"?"Tap a label, then a numbered spot, or use the list below.":"Fill in every field, then Check."}</span>`}</p>
+  ${body}
+  ${res?`<div class="lab-score${res.points===res.max?" ok":" bad"}" tabindex="-1">Part score <b>${res.points}/${res.max}</b>${LAB.first[i]!==res?`<span class="silk">counts your first check: ${LAB.first[i].points}/${LAB.first[i].max}</span>`:""}</div>
+    ${wrong.length?`<ul class="lab-fb">${wrong.map(m=>`<li><b>${esc(markName(p,m.key))}</b> → ${esc(m.correct)}<span>${esc(m.x)}</span></li>`).join("")}</ul>`:`<p class="sub">All correct.</p>`}`:""}
+  <div class="lab-actions">
+    ${res?`<button class="btn" data-act="lab-retry">Try again</button>${i<n-1?`<button class="btn" data-act="lab-next">Next part</button>`:""}`
+      :`<button class="btn primary" data-act="lab-check" ${Labs.ready(p,ans)?"":"disabled"}>Check</button>`}
+    ${LAB.first.every(Boolean)?`<button class="btn primary" data-act="lab-finish">Finish lab</button>`:""}
+  </div>
+  </div>`;
+}
+function bucketsHTML(p,i,ans,res){
+  const locked=!!res,sel=LAB.sel;
+  const chip=k=>{const m=res&&res.marks[k];return `<button class="lchip${markCls(m)}" data-act="lab-item" data-k="${k}" draggable="${!locked}" aria-pressed="${!!(sel&&sel.kind==="item"&&sel.key===k)}" ${locked?"disabled":""}>${esc(p.items[k].t)}</button>`};
+  const tray=LAB.order[i].filter(k=>ans[k]==null);
+  return `${locked?"":`<div class="tray" data-drop="tray" aria-label="Items to place">${tray.length?tray.map(chip).join(""):`<span class="silk">All placed</span>`}</div>`}
+  <div class="buckets">${p.buckets.map((b,bi)=>`<div class="bucket${sel&&sel.kind==="item"?" armed":""}" data-drop="${bi}" data-act="lab-bucket" data-b="${bi}">
+    <button class="bucket-h" data-act="lab-bucket" data-b="${bi}" ${locked?"disabled":""}>${esc(b)}</button>
+    <div class="bucket-items">${LAB.order[i].filter(k=>ans[k]===bi).map(chip).join("")}</div></div>`).join("")}</div>`;
+}
+function configHTML(p,ans,res){
+  const locked=!!res,dis=locked?"disabled":"";
+  const ctl=(f,key,withAria)=>{
+    const id="lf"+key.replace(".","_"),v=ans[key],cls=markCls(res&&res.marks.find(m=>m.key===key)),aria=withAria?` aria-label="${esc(f.label)}"`:"";
+    if(f.type==="select")return `<select id="${id}" class="lctl${cls}" data-lab="${key}" data-t="select" ${dis}${aria}><option value="">Choose…</option>${f.o.map((o,oi)=>`<option value="${oi}" ${v===oi?"selected":""}>${esc(o)}</option>`).join("")}</select>`;
+    if(f.type==="text")return `<input id="${id}" class="lctl${cls}" data-lab="${key}" data-t="text" type="text" value="${esc(v||"")}" placeholder="${esc(f.ph||"")}" autocomplete="off" autocapitalize="off" spellcheck="false" ${dis}${aria}>`;
+    return `<input id="${id}" class="lctl${cls}" data-lab="${key}" data-t="check" type="checkbox" ${(v===undefined?f.init:v)?"checked":""} ${dis}${aria}>`;
+  };
+  const out=[];let table=[];
+  const flush=()=>{if(!table.length)return;const h=p.head||[],rowHead=h.length===table[0].row.length+1;
+    out.push(`<div class="ltable-wrap"><table class="ltable">${h.length?`<thead><tr>${h.map(x=>`<th scope="col">${esc(x)}</th>`).join("")}</tr></thead>`:""}<tbody>${table.map(({row,r})=>`<tr>${rowHead?`<th scope="row">${esc(row[0].label.split(":")[0])}</th>`:""}${row.map((f,c)=>`<td>${ctl(f,r+"."+c,true)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`);table=[]};
+  p.rows.forEach((row,r)=>{
+    if(row.length>1){table.push({row,r});return}
+    flush();const f=row[0],key=r+".0";
+    out.push(f.type==="check"?`<label class="lcheck">${ctl(f,key)}<span>${esc(f.label)}</span></label>`
+      :`<div class="field lfield"><label for="lf${r}_0">${esc(f.label)}</label>${ctl(f,key)}</div>`);
+  });
+  flush();
+  return `<div class="lconfig">${out.join("")}</div>`;
+}
+function diagramHTML(p,ans,res){
+  const art=LabData.DIAGRAMS[p.art],locked=!!res,dis=locked?"disabled":"",sel=LAB.sel;
+  const badge=(s,si)=>{const v=ans[si],name=v!=null?p.labels[v]:"";
+    return `<button class="slot-badge${v!=null?" filled":""}${markCls(res&&res.marks[si])}" style="left:${(s.x/art.w*100).toFixed(2)}%;top:${(s.y/art.h*100).toFixed(2)}%" data-act="lab-slot" data-k="${si}" aria-label="Slot ${s.n}: ${esc(name||"empty")}" title="${esc(name||"Empty")}" ${dis}><b>${s.n}</b></button>`};
+  return `<div class="diagram${sel&&sel.kind==="label"?" armed":""}" style="aspect-ratio:${art.w}/${art.h}">${art.svg}${p.slots.map(badge).join("")}</div>
+  ${locked?"":`<div class="tray palette" aria-label="Labels">${p.labels.map((l,li)=>`<button class="lchip" data-act="lab-label" data-l="${li}" aria-pressed="${!!(sel&&sel.kind==="label"&&sel.key===li)}">${esc(l)}</button>`).join("")}</div>`}
+  <div class="slotlist">${p.slots.map((s,si)=>`<div class="field lfield"><label for="ls${si}">Slot ${s.n}</label><select id="ls${si}" class="lctl${markCls(res&&res.marks[si])}" data-lab="${si}" data-t="slot" ${dis}><option value="">Choose…</option>${p.labels.map((l,li)=>`<option value="${li}" ${ans[si]===li?"selected":""}>${esc(l)}</option>`).join("")}</select></div>`).join("")}</div>`;
+}
+function finishLab(){
+  if(!LAB||LAB.done||!LAB.first.every(Boolean))return;
+  const id=LAB.lab.id,score=Labs.labScore(LAB.first),labs=S.labs=S.labs||{},prev=labs[id];
+  const lvBefore=level(),goalBefore=(S.days[today()]||0)<S.settings.goal;
+  labs[id]={best:Math.max(prev?prev.best:0,score.pct),tries:(prev?prev.tries:0)+1,last:Date.now()};
+  S.xp+=5*score.points;S.days[today()]=(S.days[today()]||0)+score.max;
+  save("state");updateBar();
+  LAB.done={score,newBest:!prev||score.pct>prev.best};
+  render();window.scrollTo({top:0});SFX.play("done");
+  if(level()>lvBefore){banner("LEVEL "+level(),"level up","level");confetti(120)}
+  if(goalBefore&&(S.days[today()]||0)>=S.settings.goal){banner("GOAL MET",S.settings.goal+" questions today","goal");confetti(80)}
+  else if(score.pct>=70)confetti(score.pct===100?160:90);
+}
+function labSummaryHTML(){
+  const lab=LAB.lab,{score,newBest}=LAB.done,best=((S.labs||{})[lab.id]||{}).best||0,n=lab.parts.length;
+  const misses=[];LAB.first.forEach((r,pi)=>r.marks.forEach(m=>{if(!m.ok)misses.push({pi,m})}));
+  const still=LAB.shown==="sum";LAB.shown="sum";
+  return `<div class="stack lab${still?" still":""}">
+  <div class="crumb"><button class="btn small ghost" data-act="lab-back">&lt; LABS</button><span class="silk">Lab complete</span></div>
+  <h2 class="lab-h">${esc(lab.title)}</h2>
+  <div class="tiles">
+    <div class="tile"><b>${score.pct}%</b><span>Score</span></div>
+    <div class="tile"><b>${score.points}/${score.max}</b><span>First try</span></div>
+    <div class="tile"><b>${best}%</b><span>${newBest?"New best":"Best"}</span></div>
+    <div class="tile"><b>+${5*score.points}</b><span>XP</span></div>
+  </div>
+  ${misses.length?`<h3 class="lab-rev">Review</h3><ul class="lab-fb">${misses.map(({pi,m})=>`<li>${n>1?`<span class="silk">Part ${pi+1}</span>`:""}<b>${esc(markName(lab.parts[pi],m.key))}</b> → ${esc(m.correct)}<span>${esc(m.x)}</span></li>`).join("")}</ul>`:`<p class="sub">Perfect first try. Nothing to review.</p>`}
+  <div class="lab-actions"><button class="btn primary" data-act="lab-retry-all">Retry lab</button><button class="btn" data-act="lab-back">Back to labs</button></div>
+  </div>`;
+}
+
 /* ───────── events ───────── */
 document.addEventListener("click",e=>{
   const el=e.target.closest("[data-act]");if(!el)return;
@@ -1354,8 +1592,8 @@ document.addEventListener("click",e=>{
   switch(act){
     case "theme":{const i=THEMES.findIndex(t=>t[0]===S.settings.phosphor);S.settings.phosphor=THEMES[(i+1)%THEMES.length][0];save("state");applyLook();render();toast("Theme: "+THEMES[(i+1)%THEMES.length][1]);break}
     case "snd":S.settings.sound=!S.settings.sound;save("state");updateBar();SFX.play("ok");if(view==="home")render();break;
-    case "home":clearTimeout(lightT);view=view==="home"?"pick":"home";R=null;render();break;
-    case "courses":view="pick";render();break;
+    case "home":clearTimeout(lightT);view=view==="home"?"pick":"home";R=null;LAB=null;render();break;
+    case "courses":LAB=null;view="pick";render();break;
     case "sprint":startRound("sprint");break;
     case "again":startRound(R&&R.mode==="weak"?"weak":"sprint",{domain:R?R.domain:0,topic:R?R.topic:""});break;
     case "domain":startRound("sprint",{domain:+el.dataset.d});break;
@@ -1363,6 +1601,20 @@ document.addEventListener("click",e=>{
     case "course":switchCourse(el.dataset.c);break;
     case "weak":startRound("weak");break;
     case "lightning":startRound("lightning");break;
+    case "labs":openLabs();break;
+    case "home-course":LAB=null;view="home";render();break;
+    case "lab-open":openLab(el.dataset.id);break;
+    case "lab-back":openLabs();break;
+    case "lab-part":LAB.part=+el.dataset.i;LAB.sel=null;labRender('[data-act=lab-part][data-i="'+LAB.part+'"]');break;
+    case "lab-next":LAB.part=Math.min(LAB.part+1,LAB.lab.parts.length-1);LAB.sel=null;labRender('[data-act=lab-part][data-i="'+LAB.part+'"]');break;
+    case "lab-item":labItem(+el.dataset.k);break;
+    case "lab-bucket":labBucket(+el.dataset.b);break;
+    case "lab-label":labLabel(+el.dataset.l);break;
+    case "lab-slot":labSlot(+el.dataset.k);break;
+    case "lab-check":labCheck();break;
+    case "lab-retry":labRetry();break;
+    case "lab-finish":finishLab();break;
+    case "lab-retry-all":openLab(LAB.lab.id);break;
     case "time-mode":S.settings.timeMode=el.dataset.v;save("state");render();break;
     case "time-style":S.settings.timeStyle=el.dataset.v;save("state");render();break;
     case "qtype":{const cur=SprintSetup.filterByTypes(SprintSetup.TYPES.map(type=>({type})),S.settings.qTypes).map(x=>x.type),v=el.dataset.v;
@@ -1410,17 +1662,22 @@ document.addEventListener("submit",e=>{
 document.addEventListener("input",e=>{
   const t=e.target;
   if(t.id==="typein"&&R&&R.cur)R.cur.input=t.value;
+  else if(t.dataset.lab!=null&&t.dataset.t==="text")labSet(t.dataset.lab,t.value.trim()?t.value:undefined);
   else if(t.dataset.filter==="text"){E.filter.text=t.value;const l=$("#edList");const pos=t.selectionStart;render();const s=$("#edSearch");if(s){s.focus();s.setSelectionRange(pos,pos)}}
   else if(t.dataset.io)E.io=t.value;
   else if(view==="editor"&&t.closest("[data-form=ed]")&&t.type!=="radio"&&t.type!=="checkbox"&&t.tagName!=="SELECT")onEdInput(t);
 });
 document.addEventListener("change",e=>{
   const t=e.target;
+  if(t.dataset.lab!=null&&t.dataset.t!=="text"){labChange(t);return}
   if(t.dataset.set){const k=t.dataset.set;S.settings[k]=["autoNext","sound","crt"].includes(k)?t.value==="1":["phosphor","mixPreset"].includes(k)?t.value:+t.value;save("state");applyLook();render();if(k==="sound"&&S.settings.sound)SFX.play("ok")}
   else if(t.dataset.mix){const m=S.settings.mix=S.settings.mix||{};(m[COURSE.id]=m[COURSE.id]||{})[t.dataset.mix]=+t.value;save("state");render()}
   else if(t.dataset.filter&&t.dataset.filter!=="text"){E.filter[t.dataset.filter]=t.dataset.filter==="d"?+t.value:t.value;render()}
   else if(view==="editor"&&t.closest("[data-form=ed]")&&(t.type==="radio"||t.type==="checkbox"||t.tagName==="SELECT"))onEdInput(t);
 });
+document.addEventListener("dragstart",e=>{const c=e.target.closest&&e.target.closest(".lchip[data-act=lab-item]");if(!c||view!=="lab")return;e.dataTransfer.setData("text/plain",c.dataset.k);e.dataTransfer.effectAllowed="move"});
+document.addEventListener("dragover",e=>{if(view==="lab"&&e.target.closest&&e.target.closest("[data-drop]"))e.preventDefault()});
+document.addEventListener("drop",e=>{const z=e.target.closest&&e.target.closest("[data-drop]");if(!z||view!=="lab")return;e.preventDefault();labDrop(parseInt(e.dataTransfer.getData("text/plain"),10),z.dataset.drop)});
 document.addEventListener("toggle",e=>{const d=e.target;if(d.dataset&&d.dataset.drawer)UI.open[d.dataset.drawer]=d.open},true);
 function onPick(i){
   const c=R&&R.cur;if(!c||c.answered)return;const q=c.q;
@@ -1431,11 +1688,14 @@ function onPick(i){
 document.addEventListener("keydown",e=>{
   if(e.metaKey||e.ctrlKey||e.altKey)return;
   const tag=(e.target.tagName||"").toLowerCase(),typing=tag==="input"||tag==="textarea"||tag==="select";
+  if(view==="lab"&&e.key==="Escape"){e.preventDefault();openLabs();return}
   if(typing)return;
   const onButton=tag==="button";
+  if(view==="lab"&&LAB&&LAB.done&&e.key==="Enter"&&!onButton){e.preventDefault();openLab(LAB.lab.id);return}
   if(e.key.toLowerCase()==="m"){S.settings.sound=!S.settings.sound;save("state");updateBar();if(S.settings.sound)SFX.play("ok");return}
   if(view==="home"&&e.key.toLowerCase()==="w"){startRound("weak");return}
   if(view==="home"&&e.key.toLowerCase()==="l"){startRound("lightning");return}
+  if(view==="home"&&e.key.toLowerCase()==="b"){openLabs();return}
   if(view==="quiz"&&e.key==="Escape"&&R){if(R.results.length)finish();else{clearTimeout(lightT);view="home";R=null;render()}return}
   if(view==="home"&&e.key==="Enter"&&!onButton){e.preventDefault();startRound("sprint");return}
   if(view==="summary"&&e.key==="Enter"&&!onButton){e.preventDefault();if(R.mode==="lightning")startRound("lightning");else startRound(R.mode==="weak"?"weak":"sprint",{domain:R.domain,topic:R.topic});return}
